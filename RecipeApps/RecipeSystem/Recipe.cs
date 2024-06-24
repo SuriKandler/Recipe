@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CPUFramework;
+
 
 namespace RecipeSystem
 {
@@ -17,5 +12,55 @@ namespace RecipeSystem
             DataTable dt = SQLUtility.GetDataTable(sql);
             return dt;
         }
+
+        public static DataTable Load(int recipeid)
+        {
+            string sql = "select r.* from Recipe r where r.RecipeId = " + recipeid.ToString();
+            return SQLUtility.GetDataTable(sql);
+        }
+
+        public static DataTable GetUsersList()
+        {
+            return SQLUtility.GetDataTable("select UserId, UserName from Users");
+            
+        }
+
+        public static DataTable GetCuisineList()
+        {
+            return SQLUtility.GetDataTable("select CuisineId, Title from Cuisine");
+        }
+
+        public static void Save(DataTable dtrecipe)
+        {
+            DataRow r = dtrecipe.Rows[0];
+            int id = (int)r["RecipeId"];
+            string sql = "";
+
+            if (id > 0)
+            {
+                sql = string.Join(Environment.NewLine, $"update recipe set",
+                    $"UserId = '{r["UserId"]}',",
+                    $"CuisineId = '{r["CuisineId"]}',",
+                    $"RecipeName = '{r["RecipeName"]}',",
+                    $"DateDraft = '{r["DateDraft"]}',",
+                    $"Calories = '{r["Calories"]}'",
+                $"where RecipeId = '{r["RecipeId"]}'");
+            }
+            else
+            {
+                sql = "insert recipe(UserId, CuisineId, RecipeName, DateDraft, Calories)";
+                sql += $"select '{r["UserId"]}', '{r["CuisineId"]}', '{r["RecipeName"]}','{r["DateDraft"]}', '{r["Calories"]}'";
+            }
+            Debug.Print("---------");
+
+            SQLUtility.ExecuteSQL(sql);
+        }
+
+        public static void Delete(DataTable dtrecipe)
+        {
+            int id = (int)dtrecipe.Rows[0]["recipeId"];
+            string sql = "delete recipe where recipeId = " + id;
+            SQLUtility.ExecuteSQL(sql);
+                    }
     }
 }
