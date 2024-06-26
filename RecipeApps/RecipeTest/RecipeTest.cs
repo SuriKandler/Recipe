@@ -41,8 +41,7 @@ namespace RecipeTest
             int newid = SQLUtility.GetFirstColumnFirstRowValue("select * from recipe where recipename = 'recipetest" + maxnumrecipe + "'");
             Assert.IsTrue(newid > 0, "recipe with recipename = recipetest" + maxnumrecipe + "is not found in db");
             TestContext.WriteLine("recipe with recipename = recipetest" + maxnumrecipe + "is found in db with pk value = " + newid);
-            
-
+           
         }
 
         [Test]
