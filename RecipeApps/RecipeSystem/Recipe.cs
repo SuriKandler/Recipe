@@ -43,7 +43,6 @@ namespace RecipeSystem
             return dt;
         }
 
-
         public static void Save(DataTable dtrecipe)
         {
             DataRow r = dtrecipe.Rows[0];
