@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.SqlClient;
 using System.Diagnostics;
 
 
@@ -8,27 +9,40 @@ namespace RecipeSystem
     {
         public static DataTable SearchRecipes(string recipename)
         {
-            string sql = "select RecipeId, RecipeName, DateDraft, DatePublished, DateArchived, Calories, RecipeStatus from Recipe r where r.RecipeName like '%" + recipename + "%'";
-            DataTable dt = SQLUtility.GetDataTable(sql);
+            DataTable dt = new();
+            SqlCommand cmd = SQLUtility.GetSqlCommand("RecipeGet");
+            cmd.Parameters["@RecipeName"].Value = recipename;
+            dt = SQLUtility.GetDataTable(cmd);
             return dt;
         }
 
         public static DataTable Load(int recipeid)
         {
-            string sql = "select r.* from Recipe r where r.RecipeId = " + recipeid.ToString();
-            return SQLUtility.GetDataTable(sql);
+            DataTable dt = new();
+            SqlCommand cmd = SQLUtility.GetSqlCommand("RecipeGet");
+            cmd.Parameters["@RecipeId"].Value = recipeid;
+            dt = SQLUtility.GetDataTable(cmd);
+            return dt;
         }
 
         public static DataTable GetUsersList()
         {
-            return SQLUtility.GetDataTable("select UserId, UserName from Users");
-            
+            DataTable dt = new();
+            SqlCommand cmd = SQLUtility.GetSqlCommand("UserGet");
+            cmd.Parameters["@All"].Value = 1;
+            dt = SQLUtility.GetDataTable(cmd);
+            return dt;  
         }
 
         public static DataTable GetCuisineList()
         {
-            return SQLUtility.GetDataTable("select CuisineId, Title from Cuisine");
+            DataTable dt = new();
+            SqlCommand cmd = SQLUtility.GetSqlCommand("CuisineGet");
+            cmd.Parameters["@All"].Value = 1;
+            dt = SQLUtility.GetDataTable(cmd);
+            return dt;
         }
+
 
         public static void Save(DataTable dtrecipe)
         {
@@ -42,7 +56,7 @@ namespace RecipeSystem
                     $"UserId = '{r["UserId"]}',",
                     $"CuisineId = '{r["CuisineId"]}',",
                     $"RecipeName = '{r["RecipeName"]}',",
-                    $"DateDraft = '{r["DateDraft"]}',",
+                    //$"DateDraft = '{r["DateDraft"]}',",
                     //$"DateDraft = '{r["GetDate()"]}',",
                     $"Calories = '{r["Calories"]}'",
                 $"where RecipeId = '{r["RecipeId"]}'");
