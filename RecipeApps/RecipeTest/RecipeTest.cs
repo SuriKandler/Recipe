@@ -11,7 +11,8 @@ namespace RecipeTest
         {
             DBManager.SetConnectionString("Server = tcp:dev-sk.database.windows.net,1433; Initial Catalog = HeartyHearthDB; Persist Security Info = False; User ID = dev_login; Password = HAPpy372(3&; MultipleActiveResultSets = False; Encrypt = True; TrustServerCertificate = False; Connection Timeout = 30");
         }
-           
+
+       
         [Test]
         [TestCase("04/07/2023", 85)]
         [TestCase("06/10/2021", 185)]
@@ -44,6 +45,30 @@ namespace RecipeTest
            
         }
 
+        [Test]       
+        public void InsertNewRecipeWithSameName()
+        {
+            DataTable dt = SQLUtility.GetDataTable("select * from recipe where recipeid = 0");
+            DataRow r = dt.Rows.Add();
+            Assume.That(dt.Rows.Count == 1);
+            int userid = SQLUtility.GetFirstColumnFirstRowValue("select top 1 userid from users");
+            Assume.That(userid > 0, "Can't run test no users in the DB");
+            int cuisineid = SQLUtility.GetFirstColumnFirstRowValue("select top 1 cuisineid from cuisine");
+            Assume.That(cuisineid > 0, "Can't run test no cuisines in the DB");
+
+            string recipename = GetFirstColumnFirstRowValueAsString("select top 1 recipename from recipe");            
+
+            TestContext.WriteLine("insert recipe with name " + recipename);
+            r["userid"] = userid;
+            r["cuisineid"] = cuisineid;
+            r["recipename"] = recipename;
+            r["datedraft"] = "04/07/2023";
+            r["calories"] = "23";
+
+            Exception ex = Assert.Throws<Exception>(() => Recipe.Save(dt));
+            TestContext.WriteLine(ex.Message);
+        }
+
         [Test]
         public void ChangeCaloriesAmount()
         {
@@ -64,6 +89,24 @@ namespace RecipeTest
         }
 
         [Test]
+        public void ChangeToIncorrectCaloriesAmount()
+        {
+            int recipeid = GetExistingRecipeIdWithNoConnectingData();
+            Assume.That(recipeid > 0, "No recipes in DB, can't run test");
+            int calories = SQLUtility.GetFirstColumnFirstRowValue("select calories from recipe where recipeid = " + recipeid);
+            TestContext.WriteLine("calories for recipeid " + recipeid + " is " + calories);
+            calories = calories - calories;
+            TestContext.WriteLine("change calories to " + calories);
+
+            DataTable dt = Recipe.Load(recipeid);
+            dt.Rows[0]["Calories"] = calories;
+
+            Exception ex = Assert.Throws<Exception>(() => Recipe.Save(dt));
+            TestContext.WriteLine(ex.Message);
+        }
+
+        
+        [Test]
         public void DeleteRecipe()
         {
 
@@ -82,6 +125,26 @@ namespace RecipeTest
             DataTable dtafterdelete = SQLUtility.GetDataTable("select * from recipe where recipeid = " + recipeid);
             Assert.IsTrue(dtafterdelete.Rows.Count == 0, "record with recipeid " + recipeid + "exists in DB");
             TestContext.WriteLine("Record with recipeid " + recipeid + " does not exist in DB");
+        }
+
+        [Test]
+        public void DeleteRecipeWithConnectedData()
+        {
+            DataTable dt = SQLUtility.GetDataTable("select top 1 r.recipeid, recipename from recipe r join recipeingredient ri on ri.recipeid = r.recipeid");
+            int recipeid = 0;
+            string recipename = "";
+            if (dt.Rows.Count > 0)
+            {
+                recipeid = (int)dt.Rows[0]["recipeid"];
+                recipename = dt.Rows[0]["recipename"].ToString();
+            }
+            Assume.That(recipeid > 0, "No presidents with connecting data, in DB, can't run test");
+            TestContext.WriteLine("existing recipe with recipe ingredients - connecting data, " + recipename +  " with id = " + recipeid);
+            TestContext.WriteLine("ensure that app cannot delete " + recipeid);
+
+            Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(dt));
+
+            TestContext.WriteLine(ex.Message);
         }
 
         [Test]
@@ -107,6 +170,26 @@ namespace RecipeTest
             DataTable dt = Recipe.GetUsersList();
             Assert.IsTrue(dt.Rows.Count == usercount, "Num rows returned by app (" +  dt.Rows.Count + ") <> " + usercount);
             TestContext.WriteLine("Number of rows in Users returned by app = " + dt.Rows.Count);
+        }
+
+     
+
+        private string GetFirstColumnFirstRowValueAsString(string sql)
+        {
+            string s = "";
+
+            DataTable dt = SQLUtility.GetDataTable(sql);
+            if (dt.Rows.Count > 0 && dt.Columns.Count > 0)
+            {
+                if (dt.Rows[0][0] != DBNull.Value)
+                {
+                    s = dt.Rows[0]["RecipeName"].ToString();
+                }
+            }
+
+            return s;
+
+
         }
 
         private int GetExistingRecipeId()

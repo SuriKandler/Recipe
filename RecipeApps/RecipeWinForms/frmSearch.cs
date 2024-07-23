@@ -1,9 +1,4 @@
-﻿using System.Data;
-using System.Diagnostics;
-
-
-
-namespace RecipeWinForms
+﻿namespace RecipeWinForms
 {
     public partial class frmSearch : Form
     {
@@ -55,6 +50,5 @@ namespace RecipeWinForms
         {
             ShowRecipeForm(-1);
         }
-
     }
 }
