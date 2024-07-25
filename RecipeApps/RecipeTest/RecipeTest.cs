@@ -109,14 +109,22 @@ namespace RecipeTest
         [Test]
         public void DeleteRecipe()
         {
-
-            DataTable dt = SQLUtility.GetDataTable("select top 1 r.recipeid, recipename from recipe r left join recipeingredient ri on ri.recipeid = r.recipeid where ri.recipeingredientid is null");
+            string sql = @"
+select top 1 r.recipeid, recipename 
+from recipe r 
+left join recipeingredient ri 
+on ri.recipeid = r.recipeid 
+left join recipedirection rd 
+on rd.recipeid = r.recipeid 
+where ri.recipeingredientid is null 
+and rd.directionid is null";
+            DataTable dt = SQLUtility.GetDataTable(sql);
             int recipeid = 0;
-            //string recdesc = "";
+            string recdesc = "";
             if(dt.Rows.Count > 0)
             {
                 recipeid = (int)dt.Rows[0]["recipeid"];
-                //recdesc = dt.Rows[0]["recipename"].ToString();
+                recdesc = dt.Rows[0]["recipename"].ToString();
             }                
             Assume.That(recipeid > 0, "No recipes without recipe ingredients in DB, can't run test");
             TestContext.WriteLine("existing recipe without recipe ingredients, with id = " + recipeid);
