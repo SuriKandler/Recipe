@@ -136,6 +136,33 @@ and rd.directionid is null";
         }
 
         [Test]
+
+    public void DeleteRecipeEnforceBusinessRules()
+        {
+            string sql = @"
+select top 1 r.recipeid, r.recipename 
+from recipe r 
+where (r.RecipeStatus = 'Archived' and getdate() - r.DateArchived < 30) 
+or r.RecipeStatus = 'Published'
+";
+            DataTable dt = SQLUtility.GetDataTable(sql);
+            int recipeid = 0;
+            string recipename = "";
+            if (dt.Rows.Count > 0)
+            {
+                recipeid = (int)dt.Rows[0]["recipeid"];
+                recipename = dt.Rows[0]["recipename"].ToString();
+            }
+            Assume.That(recipeid > 0, "No recipes conflict with the business rules in the DB, can't run test");
+            TestContext.WriteLine("existing recipe blocked by the business rule, " + recipename + " with id = " + recipeid);
+            TestContext.WriteLine("ensure that app cannot delete " + recipeid);
+
+            Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(dt));
+
+            TestContext.WriteLine(ex.Message);
+        }
+
+        [Test]
         public void DeleteRecipeWithConnectedData()
         {
             DataTable dt = SQLUtility.GetDataTable("select top 1 r.recipeid, recipename from recipe r join recipeingredient ri on ri.recipeid = r.recipeid");
@@ -146,7 +173,7 @@ and rd.directionid is null";
                 recipeid = (int)dt.Rows[0]["recipeid"];
                 recipename = dt.Rows[0]["recipename"].ToString();
             }
-            Assume.That(recipeid > 0, "No presidents with connecting data, in DB, can't run test");
+            Assume.That(recipeid > 0, "No recipe with connecting data, in DB, can't run test");
             TestContext.WriteLine("existing recipe with recipe ingredients - connecting data, " + recipename +  " with id = " + recipeid);
             TestContext.WriteLine("ensure that app cannot delete " + recipeid);
 
