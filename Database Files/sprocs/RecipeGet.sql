@@ -7,7 +7,9 @@ begin
 
 	select @RecipeName = nullif(@RecipeName,'')
 
-	select r.RecipeId, r.RecipeName, r.UserId, r.CuisineId, r.RecipeStatus, r.Calories, r.DateDraft, r.DatePublished, r.DateArchived
+	select 
+	RecipeDesc = dbo.RecipeDesc(r.RecipeId),
+	r.RecipeId, r.RecipeName, r.UserId, r.CuisineId, r.RecipeStatus, r.Calories, r.DateDraft, r.DatePublished, r.DateArchived		
 	from Recipe r
 	where r.RecipeId = @RecipeId
 	or @All = 1
