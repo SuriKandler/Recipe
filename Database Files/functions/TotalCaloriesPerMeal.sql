@@ -21,3 +21,5 @@ go
 
 select TotalCaloriesPerMeal = dbo.CaloriesPerMeal(m.MealId),*
 from Meal m
+
+
