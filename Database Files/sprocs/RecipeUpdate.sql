@@ -3,9 +3,8 @@ create or alter procedure dbo.RecipeUpdate(
     @UserId int,
     @CuisineId int,
     @RecipeName varchar (100),
-    @DateDraft datetime,
-    @DatePublished datetime,
-    @DateArchived datetime,
+    @DateDraft datetime output,
+    @RecipeStatus varchar(9)output,
     @Calories int ,
     @Message varchar(500) = '' output
 )
@@ -15,12 +14,15 @@ begin
 
 	select @RecipeId = isnull(@RecipeId,0)
 
+
 	if @RecipeId = 0
 	begin		
-		insert Recipe(UserId, CuisineId, RecipeName, DateDraft, DatePublished, DateArchived, Calories) 
-		values(@UserId, @CuisineId, @RecipeName, @DateDraft, @DatePublished, @DateArchived, @Calories)
+		insert Recipe(UserId, CuisineId, RecipeName,Calories, DateDraft)
+		values(@UserId, @CuisineId, @RecipeName,@Calories, getdate())
 
 		select @RecipeId = SCOPE_IDENTITY()
+        select @DateDraft = getdate()
+        
 	end
 	else
 	begin
@@ -29,12 +31,35 @@ begin
         UserId = @UserId,
         CuisineId = @CuisineId,
         RecipeName = @RecipeName,
-        DateDraft = @DateDraft,
-        DatePublished = @DatePublished,
-        DateArchived = @DateArchived,
         Calories = @Calories
 		where RecipeId = @RecipeId
 	end
 
+
+    select @RecipeStatus = r.RecipeStatus
+    from recipe r
+    where r.RecipeId = @RecipeId
+    
 end
 go
+
+
+/*
+exec RecipeUpdate
+    @RecipeId = 0,
+    @UserId =1,
+    @CuisineId =1,
+    @RecipeName =huho,
+    --@DateDraft datetime,
+    --@DatePublished datetime,
+   -- @DateArchived datetime,
+    @Calories = 33,
+    @Message = null
+
+*/
+
+exec RecipeGet
+@RecipeId = 7,
+@All = null,
+@IncludeBlank = 0,
+@Message = null

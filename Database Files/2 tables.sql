@@ -56,7 +56,7 @@ create table dbo.Recipe(
     RecipeName varchar(100) not null 
         constraint ck_Recipe_RecipeName_cannot_be_blank check(RecipeName <> '')
         constraint u_Recipe_RecipeName unique,
-    DateDraft Datetime not null
+   DateDraft Datetime null--not null
         constraint ck_Recipe_Draft_cannot_be_future_date check(DateDraft <= getdate()), 
     DatePublished Datetime null,
     DateArchived Datetime null,

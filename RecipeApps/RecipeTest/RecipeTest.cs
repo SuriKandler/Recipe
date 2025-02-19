@@ -206,8 +206,30 @@ or r.RecipeStatus = 'Published'
             Assert.IsTrue(dt.Rows.Count == usercount, "Num rows returned by app (" +  dt.Rows.Count + ") <> " + usercount);
             TestContext.WriteLine("Number of rows in Users returned by app = " + dt.Rows.Count);
         }
+        //EDIT THIS TEST....
+        [Test]
+        public void SaveMultipleRows()
+        {
+            string sql = "delete season where seasonname in ('TestSeason1','TestSeason2')";
+            SQLUtility.ExecuteSQL(sql);
+            sql = "update season set seasonname = 'OriginalSeason1' where seasonname = 'TestChange1'";
+            SQLUtility.ExecuteSQL(sql);
 
-     
+            DataTable dt = DataMaintenance.GetDataList("Season");
+            var dr = dt.Rows.Add();
+            dr["SeasonName"] = "TestSeason1";
+            dr = dt.Rows.Add();
+            dr["SeasonName"] = "TestSeason2";
+            dt.Rows[0]["SeasonName"] = "TestChange1";
+            SQLUtility.SaveDataTable(dt, "SeasonUpdate");
+
+            sql = "select * from season where seasonname in('TestSeason1','TestSeason2','TestChange1')";
+            DataTable dtcheck = SQLUtility.GetDataTable(sql);
+            Assert.IsTrue(dtcheck.Rows.Count == 3, $"num rows of dtcheck is {dtcheck.Rows.Count} not 3 rows");
+            TestContext.WriteLine($"num rows of dtcheck should be 3 and it is {dtcheck.Rows.Count}");
+        }
+
+
 
         private string GetFirstColumnFirstRowValueAsString(string sql)
         {

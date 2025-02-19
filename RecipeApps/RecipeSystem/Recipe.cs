@@ -1,47 +1,69 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 
 
 namespace RecipeSystem
 {
     public class Recipe
     {
-        public static DataTable SearchRecipes(string recipename)
-        {
-            DataTable dt = new();
-            SqlCommand cmd = SQLUtility.GetSqlCommand("RecipeGet");
-            cmd.Parameters["@RecipeName"].Value = recipename;
-            dt = SQLUtility.GetDataTable(cmd);
-            return dt;
-        }
-
+              
         public static DataTable Load(int recipeid)
         {
             DataTable dt = new();
             SqlCommand cmd = SQLUtility.GetSqlCommand("RecipeGet");
             cmd.Parameters["@RecipeId"].Value = recipeid;
-            dt = SQLUtility.GetDataTable(cmd);
-            return dt;
+            cmd.Parameters["@IncludeBlank"].Value = 0;
+            return SQLUtility.GetDataTable(cmd);
         }
+        
 
-        public static DataTable GetUsersList()
+        public static DataTable GetDataList(string tablename)
         {
             DataTable dt = new();
-            SqlCommand cmd = SQLUtility.GetSqlCommand("UserGet");
-            //cmd.Parameters["@All"].Value = 1;
+            SqlCommand cmd = SQLUtility.GetSqlCommand(tablename + "Get");
+            cmd.Parameters["@All"].Value = 1;
             SQLUtility.SetParamValue(cmd, "@All", 1);
             dt = SQLUtility.GetDataTable(cmd);
-            return dt;  
+            return dt;
+        }
+        
+        public static DataTable GetUsersList(bool includeblank = false)
+        {
+            DataTable dt = GetDataList("User");
+            return dt;
         }
 
-        public static DataTable GetCuisineList()
+        public static DataTable GetCuisineList(bool includeblank = false)
+        {
+            DataTable dt = GetDataList("Cuisine");
+            return dt;
+        }
+
+        public static int CloneaRecipe(int baserecipeid)
+        {
+            SqlCommand cmd = SQLUtility.GetSqlCommand("CloneaRecipe");
+            SQLUtility.SetParamValue(cmd, "@BaseRecipeId", baserecipeid);
+            SQLUtility.ExecuteSQL(cmd);    
+            var recipeid = (int)cmd.Parameters["@RecipeId"].Value;
+            return recipeid;
+        }
+
+        public static DataTable ChangeStatus(int recipeid)
         {
             DataTable dt = new();
-            SqlCommand cmd = SQLUtility.GetSqlCommand("CuisineGet");
-            cmd.Parameters["@All"].Value = 1;
+            SqlCommand cmd = SQLUtility.GetSqlCommand("ChangeStatusGet");
+            cmd.Parameters["@RecipeId"].Value = recipeid;
             dt = SQLUtility.GetDataTable(cmd);
             return dt;
+        }
+
+        public static DataTable UpdateStatus(string Status, DateTime dt, int recipeid)
+        {
+            SqlCommand cmd = SQLUtility.GetSqlCommand("ChangeStatusUpdate");
+            SQLUtility.SetParamValue(cmd, "@Date", dt);
+            SQLUtility.SetParamValue(cmd, "@Status", Status );
+            SQLUtility.SetParamValue(cmd, "@RecipeId", recipeid);
+            return SQLUtility.GetDataTable(cmd);
         }
 
         public static void Save(DataTable dtrecipe)
