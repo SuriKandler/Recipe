@@ -50,12 +50,15 @@
             }            
         }     
         private void BtnAll_Click(object? sender, EventArgs e)
-        {
-            Button clickedbutton = (Button)sender;
-            if (clickedbutton != null)
+        { 
+            if (sender is Button)
             {
-                ChangeRecipesStatus(clickedbutton.Text);
-                ButtonEnabled();
+                Button clickedbutton = (Button)sender;
+                if (clickedbutton != null)
+                {
+                    ChangeRecipesStatus(clickedbutton.Text);
+                    ButtonEnabled();
+                }
             }
         }
 
