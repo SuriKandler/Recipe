@@ -5,18 +5,9 @@ create or alter procedure dbo.UserDelete(
 as
 begin
     declare @return int = 0
-
-		select @UserId = isnull(@UserId,0)
-
-	/*delete Users where UserId = @UserId
-
-	delete Recipe from Recipe r where r.userid = @UserId
-
-	delete Meal from Meal m where m.UserId = @UserId
-
-	delete MealCourseRecipe from MealCourseRecipe mr join MealCourse m on m.MealCourseId = mr.MealCourseId where mr.*/
-
-	
+	select @UserId = isnull(@UserId,0)
+begin try
+		begin tran	
 delete cr
 from CookBookRecipe cr
 join Recipe r
@@ -24,7 +15,6 @@ on cr.RecipeId = r.RecipeId
 join Users u
 on u.UserId = r.UserId 
 where u.userid = @UserId
-
 
 delete cr
 from CookBookRecipe cr
@@ -66,7 +56,6 @@ join Users u
 on u.UserId = m.UserId 
 where u.userid = @UserId
 
-
 delete m
 from Meal m
 join Users u
@@ -99,27 +88,15 @@ delete u
 from Users u
 where u.userid = @UserId
 
-	return @return
-
-	/*    if exists(select * from User r where r.UserId = @UserId and (r.UserStatus = 'Archived' and getdate() - r.DateArchived < 30) or r.UserStatus = 'Published')
-    begin
-        select @return = 1, @Message = 'Cannot delete User, either it has been archived for less than 30 days, or its a published User.'
-        goto finished
-    end
-
-	begin try
-		begin tran
-        delete UserDirection where UserId = @UserId
-		delete UserIngredient where UserId = @UserId
-		delete User where UserId = @UserId
-		commit
+commit
 	end try
 	begin catch
 		rollback;
 		throw
 	end catch
 
-    finished: 
-    return @return*/
+    finished: 	
+	return @return
+
 end
 go

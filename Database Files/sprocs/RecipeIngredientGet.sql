@@ -12,13 +12,14 @@ begin
 	select @All = isnull(@All,0), @RecipeIngredientId = isnull(@RecipeIngredientId,0), @RecipeId = isnull(@RecipeId,0)--,@IncludeBlank = nullif(@IncludeBlank,0)
 
 
-	select ri.RecipeIngredientId, ri.RecipeId, ri.MeasurementId,ri.IngredientId, ri.Amount, ri.RecipeIngredientSequence --m.MeasurementType, 
+	select ri.RecipeIngredientId, ri.RecipeId, ri.Amount, ri.MeasurementId, ri.IngredientId, ri.RecipeIngredientSequence --m.MeasurementType, 
 	from RecipeIngredient ri
 	join Measurement m
 	on m.MeasurementId = ri.MeasurementId
 	where RecipeIngredientId = @RecipeIngredientId
 	or @All = 1
     or ri.RecipeId = @RecipeId
+	order by ri.RecipeIngredientSequence
 	--union select 0,0,0,' ',0,0,0
 	--where @IncludeBlank = 1
 	return @return

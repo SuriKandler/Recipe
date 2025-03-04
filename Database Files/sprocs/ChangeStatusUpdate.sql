@@ -1,6 +1,6 @@
 create or alter procedure dbo.ChangeStatusUpdate(
     @RecipeId int = 0,
-	@Date DATETIME output,
+	@Date date output,
     @Status varchar(9) output,
     @Message varchar (1000) = '' output
 )

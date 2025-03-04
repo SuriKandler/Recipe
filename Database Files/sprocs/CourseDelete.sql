@@ -7,21 +7,12 @@ begin
     declare @return int = 0
 
 	select @CourseId = isnull(@CourseId,0)
-
-	delete Course where CourseId = @CourseId
-
-	return @return
-
-  /*  if exists(select * from Course c where c.CourseId = @CourseId)
-    begin
-        select @return = 1, @Message = 'Cannot delete Course.'
-        goto finished
-    end
-
+	
 	begin try
 		begin tran
-        delete MealCourse where CourseId = @CourseId
-		delete Course where CourseId = @CourseId
+	delete mcr from MealCourseRecipe mcr join MealCourse mc on mcr.MealCourseId = mc.MealCourseId where mc.CourseId = @CourseId
+	delete mc from MealCourse mc where mc.CourseId = @CourseId
+	delete c from Course c where c.CourseId = @CourseId
 		commit
 	end try
 	begin catch
@@ -30,10 +21,11 @@ begin
 	end catch
 
     finished: 
-    return @return*/
+    return @return
 end
 go
 
+/*
 create or alter procedure dbo.MedalDelete(
 	@MedalId int = 0,
 	@Message varchar(500) = ''  output
@@ -45,3 +37,4 @@ begin
 
 end
 go
+*/

@@ -52,6 +52,7 @@
         private void Delete(int rowindex)
         {
             int id = WindowsFormsUtility.GetIdFromGrid(gData, rowindex, currenttabletype.ToString() + "Id");
+            if (id < 1) { return; }
             if (id != 0)
             {
                 var response = MessageBox.Show($"Are you sure you want to delete this {currenttabletype}?", Application.ProductName, MessageBoxButtons.YesNo);

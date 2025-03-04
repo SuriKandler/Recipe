@@ -4,12 +4,19 @@ create or alter procedure dbo.CookbookRecipeDelete(
 )
 as
 begin
-	declare @return int = 0
+declare @return int = 0
+select @CookbookRecipeId  = isnull(@CookbookRecipeId,0)
+	begin try
+		begin tran
+		delete CookBookRecipe where CookbookRecipeId = @CookbookRecipeId
+		commit
+	end try
+	begin catch
+		rollback;
+		throw
+	end catch
 
-	select @CookbookRecipeId  = isnull(@CookbookRecipeId,0)
-
-	delete CookBookRecipe where CookbookRecipeId = @CookbookRecipeId
-
-	return @return
+    finished: 
+    return @return
 end
 go

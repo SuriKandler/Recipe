@@ -15,6 +15,7 @@ begin
 	where DirectionId = @DirectionId
 	or rd.RecipeId = @RecipeId
 	or @All = 1
+	order by rd.DirectionSequence
 
 	return @return
 end

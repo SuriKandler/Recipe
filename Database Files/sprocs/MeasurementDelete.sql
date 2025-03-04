@@ -7,23 +7,12 @@ begin
     declare @return int = 0
 
 		select @MeasurementId = isnull(@MeasurementId,0)
-
-	delete Measurement where MeasurementId = @MeasurementId
-
-	return @return
-
-    /*if exists(select * from Measurement r where r.MeasurementId = @MeasurementId and (r.MeasurementStatus = 'Archived' and getdate() - r.DateArchived < 30) or r.MeasurementStatus = 'Published')
-    begin
-        select @return = 1, @Message = 'Cannot delete Measurement, either it has been archived for less than 30 days, or its a published Measurement.'
-        goto finished
-    end
-
-	begin try
+begin try
 		begin tran
-        delete MeasurementDirection where MeasurementId = @MeasurementId
-		delete MeasurementIngredient where MeasurementId = @MeasurementId
-		delete Measurement where MeasurementId = @MeasurementId
-		commit
+	delete r from RecipeIngredient r where r.MeasurementId = @MeasurementId
+	delete m from Measurement m where m.MeasurementId = @MeasurementId
+
+			commit
 	end try
 	begin catch
 		rollback;
@@ -31,7 +20,8 @@ begin
 	end catch
 
     finished: 
-    return @return*/
+    return @return
+
 end
 go
 

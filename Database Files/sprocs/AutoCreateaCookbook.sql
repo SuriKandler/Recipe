@@ -15,23 +15,7 @@ create or alter proc dbo.AutoCreateaCookbook(
 as
 begin
     declare @return int = 0, @count int = 0
-    declare @t table(recipeid int)
-
-    insert @t (recipeid)
-    select r.recipeid
-    from recipe r
-    join users u
-    on r.userid = u.userid
-    
-    select @count = count(*)
-    from @t
-
-    if @count < 1
-    begin
-        select @message = 'Unable to create a cookbook, as the user you selected has not created any recipes'
-    goto finished
-    end
-
+  
 insert cookbook(UserId, CookbookName, Price, DateCreated, Active)
 select 
 @userId, 
@@ -45,8 +29,6 @@ group by u.userid, u.firstname, u.lastname
 
 select @cookbookid = scope_identity();
 
---select @RecipeName , r.RecipeId, r.RecipeName from Recipe r where r.UserId = @UserId
-
 insert CookbookRecipe(cookbookid,recipeid,cookbookrecipesequence)
 select @cookbookid, r.recipeid, ROW_NUMBER() OVER (ORDER BY r.recipeId)
 from recipe r
@@ -54,7 +36,7 @@ where r.userid = @userid
 order by r.RecipeName
 
     return @return
-    finished:
+    
 end
 go
 

@@ -16,8 +16,14 @@
             this.FormClosing += FrmCookbook_FormClosing;
             btnSaveCookbookRecipes.Click += BtnSaveCookbookRecipes_Click;
             gCookbookRecipes.CellContentClick += GCookbookRecipes_CellContentClick;
+            this.gCookbookRecipes.DataError += GCookbookRecipes_DataError;
         }
-       
+
+        private void GCookbookRecipes_DataError(object? sender, DataGridViewDataErrorEventArgs e)
+        {
+            MessageBox.Show("Can only insert numeric values", "Cookbook");
+        }
+
         public new void Load(int cookbookidval)
         {
             cookbookid = cookbookidval;
@@ -67,7 +73,7 @@
             WindowsFormsUtility.FormatGridForEdit(gCookbookRecipes, "CookbookRecipe");
         }
         private bool Save()
-        {
+      {
             bool b = false;
             Application.UseWaitCursor = true;
             try
@@ -129,13 +135,16 @@
         }
         private void DeleteCookbookRecipes(int rowIndex)
         {
+            int id = WindowsFormsUtility.GetIdFromGrid(gCookbookRecipes, rowIndex, "CookbookRecipeId");
+            if (id < 1) {return; }
+
             var response = MessageBox.Show("Are you sure you want to delete this Recipe from this Cookbook?", Application.ProductName, MessageBoxButtons.YesNo);
             if (response == DialogResult.No)
             {
                 return;
             }
             Application.UseWaitCursor = true;
-            int id = WindowsFormsUtility.GetIdFromGrid(gCookbookRecipes, rowIndex, "CookbookRecipeId");
+            
             if (id > 0)
             {
                 try
@@ -195,8 +204,6 @@
         {
             DeleteCookbookRecipes(e.RowIndex);
         }
-
        
     }
-
 }

@@ -36,34 +36,38 @@
             // 
             // tableLayoutPanel1
             // 
-            tableLayoutPanel1.ColumnCount = 2;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 66.47343F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.52657F));
-            tableLayoutPanel1.Controls.Add(lstRecipeName, 0, 0);
-            tableLayoutPanel1.Controls.Add(btnClone, 0, 1);
+            tableLayoutPanel1.ColumnCount = 3;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 14.2857151F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 85.71429F));
+            tableLayoutPanel1.Controls.Add(lstRecipeName, 1, 1);
+            tableLayoutPanel1.Controls.Add(btnClone, 1, 3);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 2;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.RowCount = 5;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 5.71428537F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 42.85714F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 2.85714269F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 42.85714F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 5.71428537F));
             tableLayoutPanel1.Size = new Size(1035, 593);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // lstRecipeName
             // 
-            lstRecipeName.Anchor = AnchorStyles.Right;
+            lstRecipeName.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             lstRecipeName.FormattingEnabled = true;
-            lstRecipeName.Location = new Point(197, 123);
+            lstRecipeName.Location = new Point(63, 235);
             lstRecipeName.Name = "lstRecipeName";
-            lstRecipeName.Size = new Size(488, 62);
+            lstRecipeName.Size = new Size(603, 62);
             lstRecipeName.TabIndex = 0;
             // 
             // btnClone
             // 
-            btnClone.Anchor = AnchorStyles.Right;
+            btnClone.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnClone.AutoSize = true;
-            btnClone.Location = new Point(497, 412);
+            btnClone.Location = new Point(478, 306);
             btnClone.Name = "btnClone";
             btnClone.Size = new Size(188, 64);
             btnClone.TabIndex = 1;

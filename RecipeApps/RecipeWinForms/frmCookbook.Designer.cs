@@ -30,8 +30,6 @@
         {
             tblMain = new TableLayoutPanel();
             tblTop = new TableLayoutPanel();
-            btnSave = new Button();
-            btnDelete = new Button();
             lblCookbookName = new Label();
             lblUser = new Label();
             lblPrice = new Label();
@@ -41,12 +39,16 @@
             cbActive = new CheckBox();
             lstUserName = new ComboBox();
             lblDateCreated = new Label();
-            txtDateCreated = new TextBox();
+            tblHeader = new TableLayoutPanel();
+            btnSave = new Button();
+            btnDelete = new Button();
+            txtDateCreated = new Label();
             tblBottom = new TableLayoutPanel();
             gCookbookRecipes = new DataGridView();
             btnSaveCookbookRecipes = new Button();
             tblMain.SuspendLayout();
             tblTop.SuspendLayout();
+            tblHeader.SuspendLayout();
             tblBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)gCookbookRecipes).BeginInit();
             SuspendLayout();
@@ -72,8 +74,6 @@
             tblTop.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
             tblTop.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
             tblTop.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
-            tblTop.Controls.Add(btnSave, 0, 0);
-            tblTop.Controls.Add(btnDelete, 1, 0);
             tblTop.Controls.Add(lblCookbookName, 0, 1);
             tblTop.Controls.Add(lblUser, 0, 2);
             tblTop.Controls.Add(lblPrice, 0, 4);
@@ -83,6 +83,7 @@
             tblTop.Controls.Add(cbActive, 1, 5);
             tblTop.Controls.Add(lstUserName, 1, 2);
             tblTop.Controls.Add(lblDateCreated, 2, 3);
+            tblTop.Controls.Add(tblHeader, 0, 0);
             tblTop.Controls.Add(txtDateCreated, 2, 4);
             tblTop.Dock = DockStyle.Fill;
             tblTop.Location = new Point(3, 3);
@@ -96,26 +97,6 @@
             tblTop.RowStyles.Add(new RowStyle(SizeType.Percent, 16.6666679F));
             tblTop.Size = new Size(922, 574);
             tblTop.TabIndex = 0;
-            // 
-            // btnSave
-            // 
-            btnSave.Location = new Point(5, 5);
-            btnSave.Margin = new Padding(5);
-            btnSave.Name = "btnSave";
-            btnSave.Size = new Size(188, 64);
-            btnSave.TabIndex = 10;
-            btnSave.Text = "&Save";
-            btnSave.UseVisualStyleBackColor = true;
-            // 
-            // btnDelete
-            // 
-            btnDelete.Location = new Point(281, 5);
-            btnDelete.Margin = new Padding(5);
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(188, 64);
-            btnDelete.TabIndex = 11;
-            btnDelete.Text = "&Delete";
-            btnDelete.UseVisualStyleBackColor = true;
             // 
             // lblCookbookName
             // 
@@ -209,14 +190,53 @@
             lblDateCreated.TabIndex = 6;
             lblDateCreated.Text = "Date Created";
             // 
+            // tblHeader
+            // 
+            tblHeader.ColumnCount = 3;
+            tblTop.SetColumnSpan(tblHeader, 3);
+            tblHeader.ColumnStyles.Add(new ColumnStyle());
+            tblHeader.ColumnStyles.Add(new ColumnStyle());
+            tblHeader.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tblHeader.Controls.Add(btnSave, 0, 0);
+            tblHeader.Controls.Add(btnDelete, 1, 0);
+            tblHeader.Dock = DockStyle.Fill;
+            tblHeader.Location = new Point(3, 3);
+            tblHeader.Name = "tblHeader";
+            tblHeader.RowCount = 1;
+            tblHeader.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tblHeader.Size = new Size(916, 89);
+            tblHeader.TabIndex = 12;
+            // 
+            // btnSave
+            // 
+            btnSave.Location = new Point(5, 5);
+            btnSave.Margin = new Padding(5);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new Size(188, 64);
+            btnSave.TabIndex = 10;
+            btnSave.Text = "&Save";
+            btnSave.UseVisualStyleBackColor = true;
+            // 
+            // btnDelete
+            // 
+            btnDelete.Location = new Point(203, 5);
+            btnDelete.Margin = new Padding(5);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(188, 64);
+            btnDelete.TabIndex = 11;
+            btnDelete.Text = "&Delete";
+            btnDelete.UseVisualStyleBackColor = true;
+            // 
             // txtDateCreated
             // 
-            txtDateCreated.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            txtDateCreated.Location = new Point(669, 388);
-            txtDateCreated.Margin = new Padding(8, 8, 3, 3);
+            txtDateCreated.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            txtDateCreated.AutoSize = true;
+            txtDateCreated.BackColor = SystemColors.ActiveBorder;
+            txtDateCreated.Location = new Point(572, 388);
+            txtDateCreated.Margin = new Padding(20, 8, 3, 3);
             txtDateCreated.Name = "txtDateCreated";
-            txtDateCreated.Size = new Size(250, 61);
-            txtDateCreated.TabIndex = 7;
+            txtDateCreated.Size = new Size(0, 84);
+            txtDateCreated.TabIndex = 13;
             // 
             // tblBottom
             // 
@@ -267,6 +287,7 @@
             tblMain.ResumeLayout(false);
             tblTop.ResumeLayout(false);
             tblTop.PerformLayout();
+            tblHeader.ResumeLayout(false);
             tblBottom.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)gCookbookRecipes).EndInit();
             ResumeLayout(false);
@@ -287,9 +308,10 @@
         private CheckBox cbActive;
         private ComboBox lstUserName;
         private Label lblDateCreated;
-        private TextBox txtDateCreated;
         private TableLayoutPanel tblBottom;
         private DataGridView gCookbookRecipes;
         private Button btnSaveCookbookRecipes;
+        private TableLayoutPanel tblHeader;
+        private Label txtDateCreated;
     }
 }

@@ -2,8 +2,8 @@ create or alter procedure dbo.CookbookUpdate(
     @CookbookId int output,
     @UserId int,
     @CookbookName varchar(100),
-    @Price int,
-    @DateCreated date,
+    @Price decimal(5,2),
+    @DateCreated date output,
     @Active bit,
     @Message varchar(500) = '' output
 )
@@ -15,9 +15,10 @@ begin
 	if @CookbookId = 0
 	begin		
 		insert Cookbook(UserId, CookbookName, Price, DateCreated, Active) 
-		values(@UserId, @CookbookName, @Price, @DateCreated, @Active)
+		values(@UserId, @CookbookName, @Price, getdate(), @Active)
 
 		select @CookbookId = SCOPE_IDENTITY()
+		select @DateCreated = getdate()
 	end
 	else
 	begin
@@ -26,7 +27,6 @@ begin
         UserId = @UserId,
         CookbookName = @CookbookName,
         Price = @Price,
-        DateCreated = @DateCreated,
         Active = @Active
 		where CookbookId = @CookbookId
 	end
@@ -37,10 +37,10 @@ go
 /*
 exec CookbookUpdate
 @CookbookId = 0,
-@UserId = 1,
-@CookbookName = treats,
-@Price = 12,
-@DateCreated = '01/01/2020' ,
+@UserId = 18,
+@CookbookName = '4ji',
+@Price = 12.36,
+--@DateCreated = '01/01/2020' ,
 @Active = 1,
 @Message = null
 */

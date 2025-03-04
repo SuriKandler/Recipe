@@ -69,6 +69,8 @@
         }
         private void GCookbookList_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex == -1)
+            { return; }
             ShowCookbookForm(e.RowIndex);
         }
 

@@ -14,5 +14,7 @@ begin
 end
 go
 
+/*
 select NumRecipesPerCookbook = dbo.NumRecipesPerCookbook(cb.cookbookid), cb.*
 from cookbook cb
+*/

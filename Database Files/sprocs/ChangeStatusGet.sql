@@ -22,6 +22,5 @@ begin
 end
 go
 
-select * from recipe
 
 --exec ChangeStatusGet @recipeid = 1

@@ -1,6 +1,5 @@
 create or alter proc dbo.CloneaRecipe(
     @RecipeId int = null output,
-    --@RecipeName varchar(50),
     @BaseRecipeId int,    
     @Message varchar(1000) = '' output
 )

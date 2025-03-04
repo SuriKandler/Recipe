@@ -19,5 +19,7 @@ begin
 end
 go
 
+/*
 select NumCoursesPerMeal = dbo.NumCoursesPerMeal(m.mealid), m.*
 from meal m
+*/

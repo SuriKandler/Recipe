@@ -33,7 +33,6 @@
             {
                 this.Cursor = Cursors.Default;
             }
-
         }
 
         private void ShowRecipeForm(int rowindex)
@@ -49,9 +48,7 @@
                 if (this.MdiParent != null && this.MdiParent is frmMain)
                 {
                     ((frmMain)this.MdiParent).OpenForm(typeof(frmRecipe), id);
-                    
                 }
-
             }
             catch 
             { 
@@ -62,8 +59,11 @@
                 this.Cursor = Cursors.Default;
             }
         }
+
         private void GRecipeList_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex == -1)
+            { return; }
             ShowRecipeForm(e.RowIndex);
         }
 

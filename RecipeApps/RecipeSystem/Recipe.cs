@@ -17,7 +17,7 @@ namespace RecipeSystem
         }
         
 
-        public static DataTable GetDataList(string tablename)
+        public static DataTable GetDataList(string tablename, bool includeblank = false)
         {
             DataTable dt = new();
             SqlCommand cmd = SQLUtility.GetSqlCommand(tablename + "Get");
@@ -74,9 +74,8 @@ namespace RecipeSystem
             }
             DataRow r = dtrecipe.Rows[0];
             SQLUtility.SaveDataRow(r, "RecipeUpdate");
-                      
         }
-
+      
         public static void Delete(DataTable dtrecipe)
         {
             int id = (int)dtrecipe.Rows[0]["recipeId"];

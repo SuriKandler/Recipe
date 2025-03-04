@@ -19,5 +19,7 @@ begin
 end
 go
 
+/*
 select Recipedesc = dbo.RecipeDesc(r.recipeid),*
 from Recipe r
+*/

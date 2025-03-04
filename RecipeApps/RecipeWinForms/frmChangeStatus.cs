@@ -1,4 +1,6 @@
-﻿namespace RecipeWinForms
+﻿using RecipeSystem;
+
+namespace RecipeWinForms
 
 {
     public partial class frmChangeStatus : Form
@@ -75,6 +77,7 @@
                         Recipe.UpdateStatus(clickedbutton, DateTime.Now, recipeid);
                         dtchangestatus = Recipe.ChangeStatus(recipeid);
                         bindsource.DataSource = dtchangestatus;
+                        dtchangestatus = Recipe.Load((int)this.Tag);
 
                         break;
                     case DialogResult.Cancel:

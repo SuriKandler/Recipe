@@ -17,6 +17,7 @@ begin
     return @value
 end
 go
-
+/*
 select NumRecipesPerMeal = dbo.NumRecipesPerMeal(m.mealid), m.*
 from meal m
+*/

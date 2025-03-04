@@ -3,17 +3,15 @@ create or alter procedure dbo.RecipeUpdate(
     @UserId int,
     @CuisineId int,
     @RecipeName varchar (100),
-    @DateDraft datetime output,
+    @DateDraft date output,
     @RecipeStatus varchar(9)output,
     @Calories int ,
     @Message varchar(500) = '' output
 )
 as
 begin
-	declare @return int = 0
-
-	select @RecipeId = isnull(@RecipeId,0)
-
+	
+    select @RecipeId = isnull(@RecipeId,0)
 
 	if @RecipeId = 0
 	begin		
@@ -35,7 +33,6 @@ begin
 		where RecipeId = @RecipeId
 	end
 
-
     select @RecipeStatus = r.RecipeStatus
     from recipe r
     where r.RecipeId = @RecipeId
@@ -43,23 +40,23 @@ begin
 end
 go
 
-
 /*
 exec RecipeUpdate
     @RecipeId = 0,
-    @UserId =1,
-    @CuisineId =1,
-    @RecipeName =huho,
-    --@DateDraft datetime,
+    @UserId =17,
+    @CuisineId =13,
+    @RecipeName =huhoh,
+    @DateDraft ='',
+    @RecipeStatus = '',
     --@DatePublished datetime,
    -- @DateArchived datetime,
     @Calories = 33,
     @Message = null
 
-*/
+select * from recipe
 
 exec RecipeGet
 @RecipeId = 7,
 @All = null,
 @IncludeBlank = 0,
-@Message = null
+@Message = null*/

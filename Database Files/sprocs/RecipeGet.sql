@@ -32,8 +32,8 @@ begin
     on i.IngredientId = ri.IngredientId 
     where r.RecipeId = @RecipeId
     or @All = 1
-    group by r.RecipeId, r.RecipeName, r.RecipeStatus, u.FirstName,u.Lastname,r.Calories,r.CuisineId, u.UserId, r.DateArchived,r.DateDraft,r.DatePublished
-    union select 0,0,0,'','','',0,0,'','','', ListOrder = 0
+    group by r.RecipeId, r.RecipeName, r.RecipeStatus, u.FirstName,u.Lastname,r.Calories,r.CuisineId, u.UserId, r.DateArchived,r.DateDraft,r.DatePublished, r.RecipeStatus
+    union select 0,0,0,'','','','','','','',0, ListOrder = 0
     where @IncludeBlank = 1
 	order by ListOrder, r.RecipeStatus desc
 
