@@ -33,42 +33,45 @@ namespace RecipeWinForms
 
         public void LoadForm(int recipeidval)
         {
-            recipeid = recipeidval;
-            this.Tag = recipeid;
-            dtrecipe = Recipe.Load(recipeid);
-            bindsource.DataSource = dtrecipe;
-            if (recipeid == 0)
+            if (!bFormBounded || recipeidval > 0)
             {
-                dtrecipe.Rows.Add();
+                recipeid = recipeidval;
+                this.Tag = recipeid;
+                dtrecipe = Recipe.Load(recipeid);
+                bindsource.DataSource = dtrecipe;
+                if (recipeid == 0)
+                {
+                    dtrecipe.Rows.Add();
 
+                }
+                if (!bFormBounded)
+                {
+
+                    DataTable dtusers = Recipe.GetUsersList();
+                    DataTable dtcuisine = Recipe.GetCuisineList();
+
+                    WindowsFormsUtility.SetListBinding(lstUserName, dtusers, dtrecipe, "User");
+                    WindowsFormsUtility.SetListBinding(lstTitle, dtcuisine, dtrecipe, "Cuisine");
+
+                    WindowsFormsUtility.SetControlBinding(txtRecipeName, bindsource);
+
+                    WindowsFormsUtility.SetControlBinding(lblDateDraft, bindsource);
+                    WindowsFormsUtility.SetControlBinding(lblDatePublished, bindsource);
+                    WindowsFormsUtility.SetControlBinding(lblDateArchived, bindsource);
+                    WindowsFormsUtility.SetControlBinding(txtCalories, bindsource);
+                    WindowsFormsUtility.SetControlBinding(lblRecipeStatus, bindsource);
+
+                    bFormBounded = true;
+
+                    this.Text = GetRecipeDesc();
+                    SetButtonsEnablesBasedOnNewRecord();
+                }
             }
-            DataTable dtusers = Recipe.GetUsersList();
-            DataTable dtcuisine = Recipe.GetCuisineList();
-       
-            if (!bFormBounded)
-            {
-     WindowsFormsUtility.SetListBinding(lstUserName, dtusers, dtrecipe, "User");
-            WindowsFormsUtility.SetListBinding(lstTitle, dtcuisine, dtrecipe, "Cuisine");
-
-                WindowsFormsUtility.SetControlBinding(txtRecipeName, bindsource);
-
-                WindowsFormsUtility.SetControlBinding(lblDateDraft, bindsource);
-                WindowsFormsUtility.SetControlBinding(lblDatePublished, bindsource);
-                WindowsFormsUtility.SetControlBinding(lblDateArchived, bindsource);
-                WindowsFormsUtility.SetControlBinding(txtCalories, bindsource);
-                WindowsFormsUtility.SetControlBinding(lblRecipeStatus, bindsource);
-                bFormBounded = true;
-
-            }
-
-            this.Text = GetRecipeDesc();
-            SetButtonsEnablesBasedOnNewRecord();
-            //dtrecipe.AcceptChanges();
         }
+
         private void FrmRecipe_Activated(object? sender, EventArgs e)
         {
             LoadForm(recipeid);
-            // bindsource.DataSource = dtrecipe;
         }
         private void FrmRecipe_Shown(object? sender, EventArgs e)
         {
