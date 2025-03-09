@@ -7,6 +7,7 @@ begin
 declare @return int = 0
 select @CookbookRecipeId  = isnull(@CookbookRecipeId,0)
 	begin try
+--LB: The transaction is not needed.
 		begin tran
 		delete CookBookRecipe where CookbookRecipeId = @CookbookRecipeId
 		commit
