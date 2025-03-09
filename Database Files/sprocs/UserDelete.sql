@@ -8,6 +8,8 @@ begin
 	select @UserId = isnull(@UserId,0)
 begin try
 		begin tran	
+--LB: Formatting tip: The code below should be indented.
+--LB: The Users table join is unnecessary in cases where UserId is already available in the Recipe, Meal, or other related tables.
 delete cr
 from CookBookRecipe cr
 join Recipe r

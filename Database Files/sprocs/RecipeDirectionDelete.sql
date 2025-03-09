@@ -1,5 +1,6 @@
 create or alter procedure dbo.RecipeDirectionDelete(
 	@DirectionId int = 0,
+--LB: This parameter is not needed. 
 	@RecipeId int = 0,
 	@Message varchar(500) = ''  output
 )
