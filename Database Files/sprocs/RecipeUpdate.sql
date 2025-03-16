@@ -1,5 +1,5 @@
 create or alter procedure dbo.RecipeUpdate(
-    @RecipeId int output,
+    @RecipeId int = 0 output,
     @UserId int,
     @CuisineId int,
     @RecipeName varchar (100),
@@ -12,7 +12,7 @@ as
 begin
 	
     select @RecipeId = isnull(@RecipeId,0)
-
+    
 	if @RecipeId = 0
 	begin		
 		insert Recipe(UserId, CuisineId, RecipeName,Calories, DateDraft)

@@ -1,6 +1,7 @@
 create or alter procedure dbo.CookbookGet(
 	@CookbookId int = 0, 
-	@All bit = 0)
+	@All bit = 0
+)
 as
 begin
 	

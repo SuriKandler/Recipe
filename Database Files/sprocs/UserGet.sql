@@ -2,7 +2,8 @@ create or alter procedure dbo.UserGet(
 	@UserId int = 0, 
 	@All bit = 0, 
 	@IncludeBlank bit = 0,
-	@LastName varchar(50) = '')
+	@LastName varchar(50) = ''
+)
 as
 begin
 	select @LastName = nullif(@LastName, ''), @UserId = nullif(@UserId,0), @IncludeBlank = nullif(@IncludeBlank,0)

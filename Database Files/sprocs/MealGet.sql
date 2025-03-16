@@ -1,7 +1,8 @@
 create or alter procedure dbo.MealGet(
 	@MealId int = 0, 
 	@All bit = 0,
-	@Message varchar(500) = '' output)
+	@Message varchar(500) = '' output
+)
 as
 begin	
 	

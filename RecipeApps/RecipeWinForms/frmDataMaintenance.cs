@@ -15,7 +15,8 @@
             this.FormClosing += FrmDataMaintenance_FormClosing;
             gData.CellContentClick += GData_CellContentClick;
             BindData(currenttabletype);
-        }        
+            gData.DataError += GData_DataError;
+        }
 
         private void BindData(TableTypeEnum tabletype)
         {
@@ -51,11 +52,16 @@
 
         private void Delete(int rowindex)
         {
+            string tabledeletemessage = $"Are you sure you want to delete this {currenttabletype.ToString()}?";
+            if(currenttabletype == TableTypeEnum.User)
+            {
+                tabledeletemessage = "Are you sure you want to delete this user, this will cause you to delete all related recipes, meals, and cookbooks. Do you wish to continue?";
+            }
             int id = WindowsFormsUtility.GetIdFromGrid(gData, rowindex, currenttabletype.ToString() + "Id");
             if (id < 1) { return; }
             if (id != 0)
             {
-                var response = MessageBox.Show($"Are you sure you want to delete this {currenttabletype}?", Application.ProductName, MessageBoxButtons.YesNo);
+                var response = MessageBox.Show(tabledeletemessage, Application.ProductName, MessageBoxButtons.YesNo);
                 if (response == DialogResult.No)
                 {
                     return;
@@ -63,17 +69,8 @@
                 Application.UseWaitCursor = true;
                 try
                 {
-                    if (currenttabletype == TableTypeEnum.User)
-                    {
-                        var userresponse = MessageBox.Show($"This will cause you to delete all related recipes, meals, and cookbooks. Do you wish to continue?", Application.ProductName, MessageBoxButtons.YesNo);
-                        if (userresponse == DialogResult.No)
-                        {
-                            return;
-                        }
-                    }
-                        DataMaintenance.DeleteRow(currenttabletype.ToString(), id);
-                        BindData(currenttabletype);
-                                            
+                    DataMaintenance.DeleteRow(currenttabletype.ToString(), id);
+                    BindData(currenttabletype);                                            
                 }
                 catch (Exception ex)
                 {
@@ -144,6 +141,12 @@
             }
         }
 
+        //sk - should this be entered in the architecture?
+        private void DataErrorMessage()
+        {
+            MessageBox.Show("Course sequence column can only contain numeric values.", "Recipe", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
         private void GData_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (gData.Columns[e.ColumnIndex].Name == deletecolname)
@@ -151,5 +154,11 @@
                 Delete(e.RowIndex);
             }
         }
+
+        private void GData_DataError(object? sender, DataGridViewDataErrorEventArgs e)
+        {
+            DataErrorMessage();
+        }
+
     }
 }

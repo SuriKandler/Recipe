@@ -1,5 +1,5 @@
 create or alter procedure dbo.UserUpdate(
-    @UserId int output,
+    @UserId int = 0 output,
     @FirstName varchar(30),
     @LastName varchar(50),
     @UserCode varchar (20),

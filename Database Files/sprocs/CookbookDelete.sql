@@ -5,7 +5,7 @@ create or alter procedure dbo.CookbookDelete(
 as
 begin
 	declare @return int = 0
-	select @CuisineId = isnull(@CuisineId,0)
+	--select @CuisineId = isnull(@CuisineId,0)
 	
 	begin try
 		begin tran

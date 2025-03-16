@@ -17,6 +17,7 @@
             btnSaveCookbookRecipes.Click += BtnSaveCookbookRecipes_Click;
             gCookbookRecipes.CellContentClick += GCookbookRecipes_CellContentClick;
             this.gCookbookRecipes.DataError += GCookbookRecipes_DataError;
+            txtPrice.KeyPress += TxtPrice_KeyPress;
         }
 
         private void GCookbookRecipes_DataError(object? sender, DataGridViewDataErrorEventArgs e)
@@ -69,7 +70,7 @@
             gCookbookRecipes.Columns.Clear();
             gCookbookRecipes.DataSource = dtcookbookrecipe;
             WindowsFormsUtility.AddDeleteButtonToGrid(gCookbookRecipes, deletecolname);
-            WindowsFormsUtility.AddComboBoxToGrid(gCookbookRecipes, DataMaintenance.GetDataList("Recipe"), "Recipe", "RecipeName");
+            WindowsFormsUtility.AddComboBoxToGrid(gCookbookRecipes, DataMaintenance.GetDataList("Recipe", true), "Recipe", "RecipeName");
             WindowsFormsUtility.FormatGridForEdit(gCookbookRecipes, "CookbookRecipe");
         }
         private bool Save()
@@ -187,6 +188,14 @@
             }
         }
 
+        private void TxtPrice_KeyPress(object? sender, KeyPressEventArgs e)
+        {
+            // Allow only numeric input (including backspace to delete)
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true; // Block the non-numeric character
+            }
+        }
         private void BtnDelete_Click(object? sender, EventArgs e)
         {
             Delete();

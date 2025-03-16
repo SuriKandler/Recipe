@@ -1,5 +1,5 @@
 create or alter procedure dbo.MeasurementUpdate(
-    @MeasurementId int output,
+    @MeasurementId int = 0 output,
     @Measurementtype varchar (20),
     @Message varchar(500) = '' output
 )

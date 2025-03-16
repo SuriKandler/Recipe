@@ -1,7 +1,7 @@
 create or alter procedure dbo.RecipeGet(
 	@RecipeId int = 0,
     @All bit = 0,
-    @IncludeBlank bit = 1,
+    @IncludeBlank bit = 0,
     @Message varchar (1000) = '' output
 )
 as
@@ -43,7 +43,7 @@ go
 
 /*
 select * from recipe
-exec RecipeGet @All = 1, @IncludeBlank =0
+exec RecipeGet @All = 1, @IncludeBlank =1
 
 select *, i.IngredientName
 from recipe r

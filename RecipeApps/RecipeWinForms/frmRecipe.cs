@@ -29,6 +29,7 @@ namespace RecipeWinForms
             this.Activated += FrmRecipe_Activated;
             this.gIngredients.DataError += GIngredients_DataError;
             this.gSteps.DataError += GSteps_DataError;
+            txtCalories.KeyPress += TxtCalories_KeyPress;
         }
 
         public void LoadForm(int recipeidval)
@@ -42,7 +43,6 @@ namespace RecipeWinForms
                 if (recipeid == 0)
                 {
                     dtrecipe.Rows.Add();
-
                 }
                 if (!bFormBounded)
                 {
@@ -92,6 +92,7 @@ namespace RecipeWinForms
         private void LoadRecipeSteps()
         {
             dtrecipestep = RecipeStep.LoadByRecipeId(recipeid);
+            gSteps.Columns.Clear();
             gSteps.DataSource = dtrecipestep;
             WindowsFormsUtility.FormatGridForEdit(gSteps, "RecipeDirection");
             WindowsFormsUtility.AddDeleteButtonToGrid(gSteps, deletecolname);
@@ -101,6 +102,7 @@ namespace RecipeWinForms
         {
             bool b = false;
             Application.UseWaitCursor = true;
+
             try
             {
                 Recipe.Save(dtrecipe);
@@ -207,7 +209,6 @@ namespace RecipeWinForms
             else if (id < gIngredients.Rows.Count) { gIngredients.Rows.RemoveAt(rowIndex); }
         }
 
-
         private void SaveRecipeStep()
         {
             try
@@ -221,7 +222,7 @@ namespace RecipeWinForms
         }
         private void DeleteRecipeStep(int rowIndex)
         {
-            int id = WindowsFormsUtility.GetIdFromGrid(gSteps, rowIndex, "RecipeDirectionId");
+            int id = WindowsFormsUtility.GetIdFromGrid(gSteps, rowIndex, "DirectionId");
             if (id < 1) { return; }
 
             var response = MessageBox.Show("Are you sure you want to delete this Recipe Step?", Application.ProductName, MessageBoxButtons.YesNo);
@@ -286,10 +287,20 @@ namespace RecipeWinForms
             }
         }
 
+        private void TxtCalories_KeyPress(object? sender, KeyPressEventArgs e)
+        {
+            // Allow only numeric input (including backspace to delete)
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true; // Block the non-numeric character
+            }
+        }
+
         private void DataErrorMessage()
         {
-            MessageBox.Show("Can only insert numeric values", "Recipe");
+            MessageBox.Show("Please enter only numeric values.", "Recipe", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
+      
         private void GSteps_DataError(object? sender, DataGridViewDataErrorEventArgs e)
         {
             DataErrorMessage();

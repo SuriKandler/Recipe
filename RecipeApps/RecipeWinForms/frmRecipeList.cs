@@ -17,13 +17,37 @@
             SetUpListGrid();
         }
 
+        //private void SetUpListGrid()
+        //{
+        //    try
+        //    {
+        //        this.Cursor = Cursors.WaitCursor;
+        //        gRecipeList.DataSource = DataMaintenance.GetDataListNoParam("RecipeList");
+        //        WindowsFormsUtility.FormatGridForSearchResults(gRecipeList, "Recipe");
+        //    }
+        //    catch
+        //    {
+        //        throw;
+        //    }
+        //    finally
+        //    {
+        //        this.Cursor = Cursors.Default;
+        //    }
+        //}
         private void SetUpListGrid()
         {
             try
             {
                 this.Cursor = Cursors.WaitCursor;
-                gRecipeList.DataSource = DataMaintenance.GetDataListNoParam("RecipeList");
+                gRecipeList.DataSource = DataMaintenance.GetDataList("Recipe", false);
                 WindowsFormsUtility.FormatGridForSearchResults(gRecipeList, "Recipe");
+                if (gRecipeList.Columns.Contains("DateDraft") && gRecipeList.Columns.Contains("DatePublished") && gRecipeList.Columns.Contains("DateArchived") && gRecipeList.Columns.Contains("ListOrder"))
+                {
+                    gRecipeList.Columns["DateDraft"].Visible = false;
+                    gRecipeList.Columns["DatePublished"].Visible = false;
+                    gRecipeList.Columns["DateArchived"].Visible = false;
+                    gRecipeList.Columns["ListOrder"].Visible = false;
+                }
             }
             catch
             {

@@ -16,24 +16,24 @@ as
 begin
     declare @return int = 0, @count int = 0
 --LB: Formatting tip: The code below should be indented.
-insert cookbook(UserId, CookbookName, Price, DateCreated, Active)
-select 
-@userId, 
-concat = ('Recipes by '+ u.FirstName + ' ' + u.LastName),
-dbo.NumRecipesPerUser(@userid) * 1.33,
-getdate(),
-1
-from users u
-where u.userid = @userid
-group by u.userid, u.firstname, u.lastname
+    insert cookbook(UserId, CookbookName, Price, DateCreated, Active)
+    select 
+    @userId, 
+    concat = ('Recipes by '+ u.FirstName + ' ' + u.LastName),
+    dbo.NumRecipesPerUser(@userid) * 1.33,
+    getdate(),
+    1
+    from users u
+    where u.userid = @userid
+    group by u.userid, u.firstname, u.lastname
 
-select @cookbookid = scope_identity();
+    select @cookbookid = scope_identity();
 
-insert CookbookRecipe(cookbookid,recipeid,cookbookrecipesequence)
-select @cookbookid, r.recipeid, ROW_NUMBER() OVER (ORDER BY r.recipeId)
-from recipe r
-where r.userid = @userid
-order by r.RecipeName
+    insert CookbookRecipe(cookbookid,recipeid,cookbookrecipesequence)
+    select @cookbookid, r.recipeid, ROW_NUMBER() OVER (ORDER BY r.recipeId)
+    from recipe r
+    where r.userid = @userid
+    order by r.RecipeName
 
     return @return
     

@@ -1,5 +1,5 @@
 create or alter procedure dbo.CourseUpdate(
-    @CourseId int output,
+    @CourseId int = 0 output,
     @CourseName varchar (20),
     @CourseSequence int ,
     @Message varchar(500) = '' output

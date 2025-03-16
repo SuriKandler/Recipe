@@ -9,10 +9,10 @@ begin
 		select @MeasurementId = isnull(@MeasurementId,0)
 begin try
 --LB: Formatting tip: The code below should be indented.
-	delete r from RecipeIngredient r where r.MeasurementId = @MeasurementId
-	delete m from Measurement m where m.MeasurementId = @MeasurementId
-
-			commit
+		delete r from RecipeIngredient r where r.MeasurementId = @MeasurementId
+		delete m from Measurement m where m.MeasurementId = @MeasurementId
+		commit
+		
 	end try
 	begin catch
 		rollback;

@@ -1,5 +1,5 @@
 create or alter procedure dbo.RecipeDirectionUpdate(
-	@DirectionId int  output,
+	@DirectionId int = 0 output,
 	@RecipeId int ,
     @DirectionSequence int,
     @DirectionDescription varchar(1000),
@@ -33,10 +33,11 @@ end
 go
 
 --select * from RecipeDirection
-
+/*
 exec RecipeDirectionUpdate
 @DirectionId = 14,
 @RecipeId = 1,
 @DirectionSequence = 1,
 @DirectionDescription = 'Slit bread every 1/2 inch',
 @Message = null
+*/

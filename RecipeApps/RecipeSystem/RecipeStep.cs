@@ -21,10 +21,10 @@ namespace RecipeSystem
             SQLUtility.SaveDataTable(dt, "RecipeDirectionUpdate");
         }
 
-        public static void Delete(int recipeingredientid)
+        public static void Delete(int directionid)
         {
             SqlCommand cmd = SQLUtility.GetSqlCommand("RecipeDirectionDelete");
-            cmd.Parameters["@RecipeDirectionId"].Value = recipeingredientid;
+            cmd.Parameters["@DirectionId"].Value = directionid;
             SQLUtility.ExecuteSQL(cmd);
         }
     }

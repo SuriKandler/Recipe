@@ -1,7 +1,8 @@
 create or alter procedure dbo.CuisineGet(
 	@CuisineId int = 0, 
 	@CuisineTitle varchar(50) = '',
-	@All bit = 0)
+	@All bit = 0
+)
 as
 begin
 	select @CuisineTitle = nullif(@CuisineTitle,'')

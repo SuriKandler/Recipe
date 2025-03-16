@@ -1,7 +1,8 @@
 create or alter procedure dbo.CourseGet(
 	@CourseId int = 0, 
 	@CourseName varchar(20) = '',
-	@All bit = 0)
+	@All bit = 0
+)
 as
 begin
 	select @CourseName = nullif(@CourseName,'')

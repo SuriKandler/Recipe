@@ -10,8 +10,8 @@ begin
 	begin try
 		begin tran
 --LB: Formatting tip: The code below should be indented.		
-	delete r from RecipeIngredient r where r.IngredientId = @IngredientId
-	delete i from Ingredient i where i.IngredientId = @IngredientId
+		delete r from RecipeIngredient r where r.IngredientId = @IngredientId
+		delete i from Ingredient i where i.IngredientId = @IngredientId
 
 		commit
 	end try

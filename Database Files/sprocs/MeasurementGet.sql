@@ -2,7 +2,8 @@ create or alter procedure dbo.MeasurementGet(
 	@MeasurementId int = 0, 
 	@MeasurementType varchar(20) = '',
 	@IncludeBlank bit = 1,
-	@All bit = 0)
+	@All bit = 0
+)
 as
 begin
 	select @MeasurementType = nullif(@MeasurementType,' '),@MeasurementId = nullif(@MeasurementId,0), @IncludeBlank = nullif(@IncludeBlank,0)

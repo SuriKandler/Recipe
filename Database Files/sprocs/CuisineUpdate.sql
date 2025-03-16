@@ -1,5 +1,5 @@
 create or alter procedure dbo.CuisineUpdate(
-    @CuisineId int output,
+    @CuisineId int = 0 output,
     @Title varchar (50),
     @Message varchar(500) = '' output
 )

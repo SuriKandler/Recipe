@@ -13,7 +13,7 @@ namespace RecipeSystem
             SQLUtility.SetParamValue(cmd, "@All", 1);
             if(includeblank == true)
             {
-                SQLUtility.SetParamValue(cmd, "@IncludeBlank", includeblank);
+                SQLUtility.SetParamValue(cmd, "@IncludeBlank", 1);
             }
             return SQLUtility.GetDataTable(cmd);
         }
@@ -23,6 +23,7 @@ namespace RecipeSystem
             SqlCommand cmd = SQLUtility.GetSqlCommand(sprocname);
             return SQLUtility.GetDataTable(cmd);
         }
+
         public static void SaveDataList(DataTable dt, string tablename)
         {
             SQLUtility.SaveDataTable(dt, tablename + "Update");
@@ -33,8 +34,6 @@ namespace RecipeSystem
             SqlCommand cmd = SQLUtility.GetSqlCommand(tablename + "Delete");
             SQLUtility.SetParamValue(cmd, $"@{tablename}Id", id);
             SQLUtility.ExecuteSQL(cmd);
-        }
-         
-
+        }      
     }
 }

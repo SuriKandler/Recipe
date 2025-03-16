@@ -5,6 +5,15 @@ create or alter procedure dbo.RecipeDelete(
 as
 begin
     declare @return int = 0
+	declare @deleteallowed varchar(60) = ''
+
+	select @deleteallowed= isnull(dbo.IsRecipeDeleteAllowed(@RecipeId),'')
+
+	if @deleteallowed <> ''
+	begin
+		select @return = 1, @Message = @deleteallowed
+		goto finished
+	end
 
 	begin try
 		begin tran
@@ -20,12 +29,14 @@ begin
 		throw
 	end catch
 
-       return @return
+	finished:
+	return @return
+	
 end
 go
 
 /*
 select * from Recipe
 
-exec RecipeDelete @recipeid = 2
+exec RecipeDelete @recipeid = 29
 */
