@@ -5,15 +5,20 @@ create or alter procedure dbo.RecipeDelete(
 as
 begin
     declare @return int = 0
-	declare @deleteallowed varchar(60) = ''
 
-	select @deleteallowed= isnull(dbo.IsRecipeDeleteAllowed(@RecipeId),'')
-
-	if @deleteallowed <> ''
+	--bc i want the message to be different i made 2 seperate statements, is that ok, or is there a way, and is it necessary, to combine them?
+		
+	if exists(select * from Recipe r where r.RecipeId = @RecipeId and r.RecipeStatus = 'Published')-- or(r.RecipeStatus = 'Archived' and getdate() - r.DateArchived < 30) )
 	begin
-		select @return = 1, @Message = @deleteallowed
+		select @return = 1, @Message = 'Cannot delete published recipes'
 		goto finished
 	end
+
+	if exists(select * from Recipe r where r.RecipeId = @RecipeId and r.RecipeStatus = 'Archived' and getdate() - r.DateArchived < 30 )
+		begin
+		select @return = 1, @Message = 'Cannot delete recipes archived less than 30 days'
+		goto finished
+	end 
 
 	begin try
 		begin tran
@@ -29,11 +34,17 @@ begin
 		throw
 	end catch
 
-	finished:
+		finished:
 	return @return
+	end
+	go
+
+
+
 	
-end
-go
+	
+
+
 
 /*
 select * from Recipe
