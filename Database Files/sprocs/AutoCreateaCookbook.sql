@@ -15,7 +15,7 @@ create or alter proc dbo.AutoCreateaCookbook(
 as
 begin
     declare @return int = 0, @count int = 0
---LB: Formatting tip: The code below should be indented.
+
     insert cookbook(UserId, CookbookName, Price, DateCreated, Active)
     select 
     @userId, 
