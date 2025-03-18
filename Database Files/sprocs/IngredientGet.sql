@@ -1,7 +1,6 @@
 create or alter procedure dbo.IngredientGet(
 	@IngredientId int = 0, 
 	@IngredientName varchar(30) = '',
---Formatting tip: Move the closing parenthesis to its own line to improve formatting consistency. Please do this in all your sprocs.
 	@All bit = 0
 )
 as
