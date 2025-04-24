@@ -1,33 +1,62 @@
 using NUnit.Framework;
 using System;
+using System.Configuration;
 using System.Data;
 
 namespace RecipeTest
 {
     public class RecipeTests
     {
+        //string devconnstring = ConfigurationManager.ConnectionStrings["devconn"].ConnectionString;
+        string connstring = ConfigurationManager.ConnectionStrings["liveconn"].ConnectionString;
+        string testconnstring = ConfigurationManager.ConnectionStrings["unittestconn"].ConnectionString;
         [SetUp]
         public void Setup()
         {
-            DBManager.SetConnectionString("Server = tcp:dev-sk.database.windows.net,1433; Initial Catalog = HeartyHearthDB; Persist Security Info = False; User ID = dev_login; Password = HAPpy372(3&; MultipleActiveResultSets = False; Encrypt = True; TrustServerCertificate = False; Connection Timeout = 30");
+            DBManager.SetConnectionString(connstring, true);
         }
 
-       
+        private DataTable GetDataTable(string sql)
+        {
+            DataTable dt = new();
+            DBManager.SetConnectionString(testconnstring, false);
+            dt = SQLUtility.GetDataTable(sql);
+            DBManager.SetConnectionString(connstring, false);
+            return dt;
+        }
+
+        private int GetFirstColumnFirstRowValue(string sql)
+        {
+            int n = 0;
+            DBManager.SetConnectionString(testconnstring, false);
+            n = SQLUtility.GetFirstColumnFirstRowValue(sql);
+            DBManager.SetConnectionString(connstring, false);
+            return n;
+        }
+
+        private void ExecuteSQL(string sql)
+        {
+            DBManager.SetConnectionString(testconnstring, false);
+            SQLUtility.ExecuteSQL(sql);
+            DBManager.SetConnectionString(connstring, false);
+
+        }
+
         [Test]
         [TestCase("04/07/2023", 85)]
         [TestCase("06/10/2021", 185)]
         [TestCase("11/09/2023", 126)]
         public void InsertNewRecipe(DateTime datedraft, int calories)
         {
-            DataTable dt = SQLUtility.GetDataTable("select * from recipe where recipeid = 0");
+            DataTable dt = GetDataTable("select * from recipe where recipeid = 0");
             DataRow r = dt.Rows.Add();
             Assume.That(dt.Rows.Count == 1);
-            int userid = SQLUtility.GetFirstColumnFirstRowValue("select top 1 userid from users");
+            int userid = GetFirstColumnFirstRowValue("select top 1 userid from users");
             Assume.That(userid > 0, "Can't run test no users in the DB");
-            int cuisineid = SQLUtility.GetFirstColumnFirstRowValue("select top 1 cuisineid from cuisine");
+            int cuisineid = GetFirstColumnFirstRowValue("select top 1 cuisineid from cuisine");
             Assume.That(cuisineid > 0, "Can't run test no cuisines in the DB");
 
-            int maxnumrecipe = SQLUtility.GetFirstColumnFirstRowValue("select max(recipeid) from recipe");
+            int maxnumrecipe = GetFirstColumnFirstRowValue("select max(recipeid) from recipe");
             maxnumrecipe = maxnumrecipe + 1;
 
           
@@ -39,7 +68,7 @@ namespace RecipeTest
             r["calories"] = calories;
             Recipe.Save(dt);
             
-            int newid = SQLUtility.GetFirstColumnFirstRowValue("select * from recipe where recipename = 'recipetest" + maxnumrecipe + "'");
+            int newid = GetFirstColumnFirstRowValue("select * from recipe where recipename = 'recipetest" + maxnumrecipe + "'");
             Assert.IsTrue(newid > 0, "recipe with recipename = recipetest" + maxnumrecipe + "is not found in db");
             TestContext.WriteLine("recipe with recipename = recipetest" + maxnumrecipe + "is found in db with pk value = " + newid);
            
@@ -48,12 +77,12 @@ namespace RecipeTest
         [Test]       
         public void InsertNewRecipeWithSameName()
         {
-            DataTable dt = SQLUtility.GetDataTable("select * from recipe where recipeid = 0");
+            DataTable dt = GetDataTable("select * from recipe where recipeid = 0");
             DataRow r = dt.Rows.Add();
             Assume.That(dt.Rows.Count == 1);
-            int userid = SQLUtility.GetFirstColumnFirstRowValue("select top 1 userid from users");
+            int userid = GetFirstColumnFirstRowValue("select top 1 userid from users");
             Assume.That(userid > 0, "Can't run test no users in the DB");
-            int cuisineid = SQLUtility.GetFirstColumnFirstRowValue("select top 1 cuisineid from cuisine");
+            int cuisineid = GetFirstColumnFirstRowValue("select top 1 cuisineid from cuisine");
             Assume.That(cuisineid > 0, "Can't run test no cuisines in the DB");
 
             string recipename = GetFirstColumnFirstRowValueAsString("select top 1 recipename from recipe");            
@@ -74,7 +103,7 @@ namespace RecipeTest
         {
             int recipeid = GetExistingRecipeIdWithNoConnectingData();
             Assume.That(recipeid > 0, "No recipes in DB, can't run test");
-            int calories = SQLUtility.GetFirstColumnFirstRowValue("select calories from recipe where recipeid = " + recipeid);
+            int calories = GetFirstColumnFirstRowValue("select calories from recipe where recipeid = " + recipeid);
             TestContext.WriteLine("calories for recipeid " + recipeid + " is " + calories);
             calories = calories + 12;
             TestContext.WriteLine("change calories to " + calories);
@@ -83,7 +112,7 @@ namespace RecipeTest
             dt.Rows[0]["Calories"] = calories;
             Recipe.Save(dt);
 
-            int newcalories = SQLUtility.GetFirstColumnFirstRowValue("select calories from recipe where recipeid = " + recipeid);
+            int newcalories = GetFirstColumnFirstRowValue("select calories from recipe where recipeid = " + recipeid);
             Assert.IsTrue(newcalories == calories, "Calories for recipe (" + recipeid + ") = " + newcalories);
             TestContext.WriteLine("Calories for recipe (" + recipeid + ") = " + newcalories);
         }
@@ -93,7 +122,7 @@ namespace RecipeTest
         {
             int recipeid = GetExistingRecipeIdWithNoConnectingData();
             Assume.That(recipeid > 0, "No recipes in DB, can't run test");
-            int calories = SQLUtility.GetFirstColumnFirstRowValue("select calories from recipe where recipeid = " + recipeid);
+            int calories = GetFirstColumnFirstRowValue("select calories from recipe where recipeid = " + recipeid);
             TestContext.WriteLine("calories for recipeid " + recipeid + " is " + calories);
             calories = calories - calories;
             TestContext.WriteLine("change calories to " + calories);
@@ -118,7 +147,7 @@ left join recipedirection rd
 on rd.recipeid = r.recipeid 
 where ri.recipeingredientid is null 
 and rd.directionid is null";
-            DataTable dt = SQLUtility.GetDataTable(sql);
+            DataTable dt = GetDataTable(sql);
             int recipeid = 0;
             string recdesc = "";
             if(dt.Rows.Count > 0)
@@ -130,7 +159,7 @@ and rd.directionid is null";
             TestContext.WriteLine("existing recipe without recipe ingredients, with id = " + recipeid);
             TestContext.WriteLine("ensure that app can delete " + recipeid);
             Recipe.Delete(dt);
-            DataTable dtafterdelete = SQLUtility.GetDataTable("select * from recipe where recipeid = " + recipeid);
+            DataTable dtafterdelete = GetDataTable("select * from recipe where recipeid = " + recipeid);
             Assert.IsTrue(dtafterdelete.Rows.Count == 0, "record with recipeid " + recipeid + "exists in DB");
             TestContext.WriteLine("Record with recipeid " + recipeid + " does not exist in DB");
         }
@@ -145,7 +174,7 @@ from recipe r
 where (r.RecipeStatus = 'Archived' and getdate() - r.DateArchived < 30) 
 or r.RecipeStatus = 'Published'
 ";
-            DataTable dt = SQLUtility.GetDataTable(sql);
+            DataTable dt = GetDataTable(sql);
             int recipeid = 0;
             string recipename = "";
             if (dt.Rows.Count > 0)
@@ -165,7 +194,7 @@ or r.RecipeStatus = 'Published'
         [Test]
         public void DeleteRecipeWithConnectedData()
         {
-            DataTable dt = SQLUtility.GetDataTable("select top 1 r.recipeid, recipename from recipe r join recipeingredient ri on ri.recipeid = r.recipeid");
+            DataTable dt = GetDataTable("select top 1 r.recipeid, recipename from recipe r join recipeingredient ri on ri.recipeid = r.recipeid");
             int recipeid = 0;
             string recipename = "";
             if (dt.Rows.Count > 0)
@@ -198,7 +227,7 @@ or r.RecipeStatus = 'Published'
         [Test]
         public void GetListOfUsers()
         {
-            int usercount = SQLUtility.GetFirstColumnFirstRowValue("select total = count(*) from users");
+            int usercount = GetFirstColumnFirstRowValue("select total = count(*) from users");
             Assume.That(usercount > 0, "No users in DB, can't test");
             TestContext.WriteLine("Num of users in DB = " + usercount);
             TestContext.WriteLine("Ensure that num of rows returned by app matches " + usercount);
@@ -206,25 +235,25 @@ or r.RecipeStatus = 'Published'
             Assert.IsTrue(dt.Rows.Count == usercount, "Num rows returned by app (" +  dt.Rows.Count + ") <> " + usercount);
             TestContext.WriteLine("Number of rows in Users returned by app = " + dt.Rows.Count);
         }
-        //EDIT THIS TEST....
+        
         [Test]
         public void SaveMultipleRows()
         {
-            string sql = "delete season where seasonname in ('TestSeason1','TestSeason2')";
-            SQLUtility.ExecuteSQL(sql);
-            sql = "update season set seasonname = 'OriginalSeason1' where seasonname = 'TestChange1'";
-            SQLUtility.ExecuteSQL(sql);
+            string sql = "delete cuisine where title in ('Testcuisine1','Testcuisine2')";
+            ExecuteSQL(sql);
+            sql = "update cuisine set title = 'Originalcuisine1' where title = 'TestChange1'";
+            ExecuteSQL(sql);
 
-            DataTable dt = DataMaintenance.GetDataList("Season");
+            DataTable dt = DataMaintenance.GetDataList("cuisine");
             var dr = dt.Rows.Add();
-            dr["SeasonName"] = "TestSeason1";
+            dr["title"] = "Testcuisine1";
             dr = dt.Rows.Add();
-            dr["SeasonName"] = "TestSeason2";
-            dt.Rows[0]["SeasonName"] = "TestChange1";
-            SQLUtility.SaveDataTable(dt, "SeasonUpdate");
+            dr["title"] = "Testcuisine2";
+            dt.Rows[0]["title"] = "TestChange1";
+            SQLUtility.SaveDataTable(dt, "cuisineUpdate");
 
-            sql = "select * from season where seasonname in('TestSeason1','TestSeason2','TestChange1')";
-            DataTable dtcheck = SQLUtility.GetDataTable(sql);
+            sql = "select * from cuisine where title in('Testcuisine1','Testcuisine2','TestChange1')";
+            DataTable dtcheck = GetDataTable(sql);
             Assert.IsTrue(dtcheck.Rows.Count == 3, $"num rows of dtcheck is {dtcheck.Rows.Count} not 3 rows");
             TestContext.WriteLine($"num rows of dtcheck should be 3 and it is {dtcheck.Rows.Count}");
         }
@@ -235,7 +264,7 @@ or r.RecipeStatus = 'Published'
         {
             string s = "";
 
-            DataTable dt = SQLUtility.GetDataTable(sql);
+            DataTable dt = GetDataTable(sql);
             if (dt.Rows.Count > 0 && dt.Columns.Count > 0)
             {
                 if (dt.Rows[0][0] != DBNull.Value)
@@ -251,13 +280,13 @@ or r.RecipeStatus = 'Published'
 
         private int GetExistingRecipeId()
         {
-            return SQLUtility.GetFirstColumnFirstRowValue("select top 1 recipeid from recipe");
+            return GetFirstColumnFirstRowValue("select top 1 recipeid from recipe");
             
         }
 
         private int GetExistingRecipeIdWithNoConnectingData()
         {
-            return SQLUtility.GetFirstColumnFirstRowValue("select top 1 r.recipeid from recipe r left join recipeingredient ri on ri.recipeid = r.recipeid where ri.recipeingredientid is null");
+            return GetFirstColumnFirstRowValue("select top 1 r.recipeid from recipe r left join recipeingredient ri on ri.recipeid = r.recipeid where ri.recipeingredientid is null");
         }
     }
 }
