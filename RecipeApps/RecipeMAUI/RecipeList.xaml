@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RecipeMAUI.RecipeList"
+             Title="RecipeList">
+   
+        <ListView x:Name="RecipeLst" >
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <Grid RowDefinitions="Auto" ColumnDefinitions="2*,*,*,*,*,*" ColumnSpacing="10">
+                        <Label Grid.Row="0" Grid.Column="0" Text="{Binding Path=[Picture]}"/>
+                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding Path=[RecipeName]}"/>
+                        <Label Grid.Row="0" Grid.Column="2" Text="{Binding Path=[RecipeStatus]}"/>
+                        <Label Grid.Row="0" Grid.Column="3" Text="{Binding Path=[UserName]}"/>
+                        <Label Grid.Row="0" Grid.Column="4" Text="{Binding Path=[Calories]}"/>
+                        <Label Grid.Row="0" Grid.Column="5" Text="{Binding Path=[NumIngredients]}"/>
+                        
+
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>        
+    </ListView>
+    
+
+</ContentPage>

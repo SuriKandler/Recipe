@@ -19,4 +19,4 @@ begin
 end
 go
 
-exec dbo.MealList @all = 1
+--exec dbo.MealList @all = 1
