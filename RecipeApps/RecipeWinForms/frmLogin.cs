@@ -12,7 +12,6 @@ namespace RecipeWinForms
             btnLogin.Click += BtnLogin_Click;
             btnCancel.Click += BtnCancel_Click;
         }
-
         public bool ShowLogin()
         {
 #if DEBUG

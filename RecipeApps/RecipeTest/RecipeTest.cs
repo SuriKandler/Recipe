@@ -24,7 +24,6 @@ namespace RecipeTest
             DBManager.SetConnectionString(connstring, false);
             return dt;
         }
-
         private int GetFirstColumnFirstRowValue(string sql)
         {
             int n = 0;
