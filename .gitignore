@@ -15,7 +15,7 @@
 
 #secret files
 *create-login
-*secret.config.sql
+*secret.config
 secret-appsettings.json
 
 # Mono auto generated files
