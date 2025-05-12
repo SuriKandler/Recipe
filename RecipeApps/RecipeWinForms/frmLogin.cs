@@ -11,6 +11,8 @@ namespace RecipeWinForms
             InitializeComponent();
             btnLogin.Click += BtnLogin_Click;
             btnCancel.Click += BtnCancel_Click;
+            txtUserId.Text = Settings.Default.userid;
+            txtPassword.Text = Settings.Default.password;
         }
 
         public bool ShowLogin()
@@ -18,8 +20,6 @@ namespace RecipeWinForms
 #if DEBUG
             this.Text = this.Text + " - DEV";
 #endif
-            txtUserId.Text = Settings.Default.userid;
-            txtPassword.Text = Settings.Default.password;
             this.ShowDialog();  
             return loginsuccess;
         }
