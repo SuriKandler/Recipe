@@ -10,6 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="App.secret.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="App.secret.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\CPUWindowsFormFramework\CPUWindowsFormFramework.csproj" />
     <ProjectReference Include="..\RecipeSystem\RecipeSystem.csproj" />
   </ItemGroup>
