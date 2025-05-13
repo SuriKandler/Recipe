@@ -28,6 +28,11 @@ namespace RecipeWinForms
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(txtUserId.Text) || string.IsNullOrWhiteSpace(txtPassword.Text))
+                {
+                    MessageBox.Show("Username and password cannot be blank.", Application.ProductName);
+                    return;
+                }
                 string connstringkey = "";
 #if DEBUG
                 connstringkey = "devconn";
@@ -45,6 +50,7 @@ namespace RecipeWinForms
             catch (Exception ex)
             {
                 MessageBox.Show("Invalid Login. Please try again", Application.ProductName);
+                loginsuccess = false;
             }
            
         }
