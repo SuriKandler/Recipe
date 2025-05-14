@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using RecipeSystem;
 using System;
 using System.Configuration;
 using System.Data;
@@ -280,13 +281,58 @@ or r.RecipeStatus = 'Published'
 
         private int GetExistingRecipeId()
         {
-            return GetFirstColumnFirstRowValue("select top 1 recipeid from recipe");
+            return GetFirstColumnFirstRowValue("select top 1 recipename as RecipeName from recipe");
             
         }
 
         private int GetExistingRecipeIdWithNoConnectingData()
         {
             return GetFirstColumnFirstRowValue("select top 1 r.recipeid from recipe r left join recipeingredient ri on ri.recipeid = r.recipeid where ri.recipeingredientid is null");
+        }
+
+        [Test]
+        public void CheckTestEnvironmentConfiguration()
+        {
+            string liveConnStr = ConfigurationManager.ConnectionStrings["liveconn"]?.ConnectionString;
+            string devConnStr = ConfigurationManager.ConnectionStrings["devconn"]?.ConnectionString;
+
+            TestContext.WriteLine($"Current user: {Environment.UserName}");
+            TestContext.WriteLine($"Machine name: {Environment.MachineName}");
+
+            if (string.IsNullOrWhiteSpace(liveConnStr))
+            {
+                TestContext.WriteLine("liveconn connection string is NULL or empty.");
+            }
+            else
+            {
+                TestContext.WriteLine("liveconn connection string:");
+                TestContext.WriteLine(liveConnStr);
+            }
+
+            if (string.IsNullOrWhiteSpace(devConnStr))
+            {
+                TestContext.WriteLine("devconn connection string is NULL or empty.");
+            }
+            else
+            {
+                TestContext.WriteLine("devconn connection string:");
+                TestContext.WriteLine(devConnStr);
+            }
+
+            // Try to open a connection to test access
+            try
+            {
+                using (var conn = new System.Data.SqlClient.SqlConnection(liveConnStr))
+                {
+                    conn.Open();
+                    TestContext.WriteLine("Successfully connected to database using liveconn.");
+                }
+            }
+            catch (Exception ex)
+            {
+                TestContext.WriteLine("FAILED to connect using liveconn.");
+                TestContext.WriteLine("Exception: " + ex.Message);
+            }
         }
     }
 }
