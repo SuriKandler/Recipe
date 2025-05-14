@@ -45,3 +45,11 @@ grant execute on CloneaRecipe to approle
 grant execute on ChangeStatusUpdate to approle
 grant execute on ChangeStatusGet to approle
 grant execute on AutoCreateaCookbook to approle
+
+grant select on Recipe to appadmin_user
+grant select on RecipeIngredient to appadmin_user
+grant select on RecipeDirection to appadmin_user
+grant select on Users to appadmin_user
+grant select on Cuisine to appadmin_user
+grant delete on Cuisine to appadmin_user
+grant update on Cuisine to appadmin_user

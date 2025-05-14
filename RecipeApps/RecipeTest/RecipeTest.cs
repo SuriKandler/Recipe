@@ -10,7 +10,7 @@ namespace RecipeTest
     {
         string devconnstring = ConfigurationManager.ConnectionStrings["devconn"].ConnectionString;
         string connstring = ConfigurationManager.ConnectionStrings["liveconn"].ConnectionString;
-        //string testconnstring = ConfigurationManager.ConnectionStrings["unittestconn"].ConnectionString;
+        string testconnstring = ConfigurationManager.ConnectionStrings["unittestconn"].ConnectionString;
         [SetUp]
         public void Setup()
         {
@@ -20,7 +20,7 @@ namespace RecipeTest
         private DataTable GetDataTable(string sql)
         {
             DataTable dt = new();
-            //DBManager.SetConnectionString(testconnstring, false);
+            DBManager.SetConnectionString(testconnstring, false);
             dt = SQLUtility.GetDataTable(sql);
             DBManager.SetConnectionString(connstring, false);
             return dt;
@@ -29,7 +29,7 @@ namespace RecipeTest
         private int GetFirstColumnFirstRowValue(string sql)
         {
             int n = 0;
-            //DBManager.SetConnectionString(testconnstring, false);
+            DBManager.SetConnectionString(testconnstring, false);
             n = SQLUtility.GetFirstColumnFirstRowValue(sql);
             DBManager.SetConnectionString(connstring, false);
             return n;
@@ -37,7 +37,7 @@ namespace RecipeTest
 
         private void ExecuteSQL(string sql)
         {
-            //DBManager.SetConnectionString(testconnstring, false);
+            DBManager.SetConnectionString(testconnstring, false);
             SQLUtility.ExecuteSQL(sql);
             DBManager.SetConnectionString(connstring, false);
 
@@ -67,7 +67,8 @@ namespace RecipeTest
             r["recipename"] = "recipetest" + maxnumrecipe;
             r["datedraft"] = datedraft;
             r["calories"] = calories;
-            Recipe.Save(dt);
+            bizRecipe rcp = new();
+            rcp.Save(dt);
             
             int newid = GetFirstColumnFirstRowValue("select * from recipe where recipename = 'recipetest" + maxnumrecipe + "'");
             Assert.IsTrue(newid > 0, "recipe with recipename = recipetest" + maxnumrecipe + "is not found in db");
@@ -94,8 +95,8 @@ namespace RecipeTest
             r["recipename"] = recipename;
             r["datedraft"] = "04/07/2023";
             r["calories"] = "23";
-
-            Exception ex = Assert.Throws<Exception>(() => Recipe.Save(dt));
+            bizRecipe rcp = new();
+            Exception ex = Assert.Throws<Exception>(() => rcp.Save(dt));
             TestContext.WriteLine(ex.Message);
         }
 
@@ -111,7 +112,8 @@ namespace RecipeTest
 
             DataTable dt = Recipe.Load(recipeid);
             dt.Rows[0]["Calories"] = calories;
-            Recipe.Save(dt);
+            bizRecipe rcp = new();
+            rcp.Save(dt);
 
             int newcalories = GetFirstColumnFirstRowValue("select calories from recipe where recipeid = " + recipeid);
             Assert.IsTrue(newcalories == calories, "Calories for recipe (" + recipeid + ") = " + newcalories);
@@ -130,8 +132,8 @@ namespace RecipeTest
 
             DataTable dt = Recipe.Load(recipeid);
             dt.Rows[0]["Calories"] = calories;
-
-            Exception ex = Assert.Throws<Exception>(() => Recipe.Save(dt));
+            bizRecipe rcp = new();
+            Exception ex = Assert.Throws<Exception>(() => rcp.Save(dt));
             TestContext.WriteLine(ex.Message);
         }
 
@@ -159,7 +161,8 @@ and rd.directionid is null";
             Assume.That(recipeid > 0, "No recipes without recipe ingredients in DB, can't run test");
             TestContext.WriteLine("existing recipe without recipe ingredients, with id = " + recipeid);
             TestContext.WriteLine("ensure that app can delete " + recipeid);
-            Recipe.Delete(dt);
+            bizRecipe rcp = new();
+            rcp.Delete(dt);
             DataTable dtafterdelete = GetDataTable("select * from recipe where recipeid = " + recipeid);
             Assert.IsTrue(dtafterdelete.Rows.Count == 0, "record with recipeid " + recipeid + "exists in DB");
             TestContext.WriteLine("Record with recipeid " + recipeid + " does not exist in DB");
@@ -186,8 +189,8 @@ or r.RecipeStatus = 'Published'
             Assume.That(recipeid > 0, "No recipes conflict with the business rules in the DB, can't run test");
             TestContext.WriteLine("existing recipe blocked by the business rule, " + recipename + " with id = " + recipeid);
             TestContext.WriteLine("ensure that app cannot delete " + recipeid);
-
-            Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(dt));
+            bizRecipe rcp = new();
+            Exception ex = Assert.Throws<Exception>(() => rcp.Delete(dt));
 
             TestContext.WriteLine(ex.Message);
         }
@@ -206,8 +209,8 @@ or r.RecipeStatus = 'Published'
             Assume.That(recipeid > 0, "No recipe with connecting data, in DB, can't run test");
             TestContext.WriteLine("existing recipe with recipe ingredients - connecting data, " + recipename +  " with id = " + recipeid);
             TestContext.WriteLine("ensure that app cannot delete " + recipeid);
-
-            Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(dt));
+            bizRecipe rcp = new();
+            Exception ex = Assert.Throws<Exception>(() => rcp.Delete(dt));
 
             TestContext.WriteLine(ex.Message);
         }
@@ -219,7 +222,8 @@ or r.RecipeStatus = 'Published'
             Assume.That(recipeid > 0, "No recipes in DB, can't run test");
             TestContext.WriteLine("existing recipe with id = " + recipeid);
             TestContext.WriteLine("Ensure that app loads recipe " + recipeid);
-            DataTable dt = Recipe.Load(recipeid);
+            bizRecipe rcp = new();
+            DataTable dt = rcp.Load(recipeid);
             int loadedid = (int)dt.Rows[0]["recipeid"];
             Assert.IsTrue(loadedid == recipeid, (int)dt.Rows[0]["recipeid"] + " <> " + recipeid);
             TestContext.WriteLine("Loaded recipe (" + loadedid + ")");
@@ -281,7 +285,7 @@ or r.RecipeStatus = 'Published'
 
         private int GetExistingRecipeId()
         {
-            return GetFirstColumnFirstRowValue("select top 1 recipename as RecipeName from recipe");
+            return GetFirstColumnFirstRowValue("select top 1 r.recipeid from recipe r");
             
         }
 
