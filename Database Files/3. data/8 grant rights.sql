@@ -53,3 +53,4 @@ grant select on Users to appadmin_user
 grant select on Cuisine to appadmin_user
 grant delete on Cuisine to appadmin_user
 grant update on Cuisine to appadmin_user
+

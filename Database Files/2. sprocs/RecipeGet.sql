@@ -2,13 +2,14 @@ create or alter procedure dbo.RecipeGet(
 	@RecipeId int = 0,
     @All bit = 0,
     @IncludeBlank bit = 0,
-    @Message varchar (1000) = '' output
+	@RecipeName varchar (30) = '',
+	@Message varchar (1000) = '' output
 )
 as
 begin
     declare @return int = 0
     
-	select @RecipeId = nullif(@RecipeId,0), @All = nullif(@All,0), @IncludeBlank = nullif(@IncludeBlank,0)
+	select @RecipeId = nullif(@RecipeId,0), @All = nullif(@All,0), @IncludeBlank = nullif(@IncludeBlank,0), @RecipeName = nullif(@RecipeName,'')
 
     select 
         r.RecipeId, 
@@ -33,6 +34,7 @@ begin
     on i.IngredientId = ri.IngredientId 
     where r.RecipeId = @RecipeId
     or @All = 1
+	or (@RecipeName is not null and r.RecipeName like '%' + @RecipeName + '%')
     group by r.RecipeId, r.RecipeName, r.RecipeStatus, u.FirstName,u.Lastname,r.Calories,r.CuisineId, u.UserId, r.DateArchived,r.DateDraft,r.DatePublished, r.RecipeStatus, r.Picture
     union select 0,0,0,'','','','','','','',0,'', ListOrder = 0
     where @IncludeBlank = 1

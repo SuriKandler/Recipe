@@ -10,7 +10,7 @@ namespace RecipeTest
     {
         string devconnstring = ConfigurationManager.ConnectionStrings["devconn"].ConnectionString;
         string connstring = ConfigurationManager.ConnectionStrings["liveconn"].ConnectionString;
-        string testconnstring = ConfigurationManager.ConnectionStrings["unittestconn"].ConnectionString;
+        //string testconnstring = ConfigurationManager.ConnectionStrings["unittestconn"].ConnectionString;
         [SetUp]
         public void Setup()
         {
@@ -20,7 +20,7 @@ namespace RecipeTest
         private DataTable GetDataTable(string sql)
         {
             DataTable dt = new();
-            DBManager.SetConnectionString(testconnstring, false);
+            //DBManager.SetConnectionString(testconnstring, false);
             dt = SQLUtility.GetDataTable(sql);
             DBManager.SetConnectionString(connstring, false);
             return dt;
@@ -29,7 +29,7 @@ namespace RecipeTest
         private int GetFirstColumnFirstRowValue(string sql)
         {
             int n = 0;
-            DBManager.SetConnectionString(testconnstring, false);
+            //DBManager.SetConnectionString(testconnstring, false);
             n = SQLUtility.GetFirstColumnFirstRowValue(sql);
             DBManager.SetConnectionString(connstring, false);
             return n;
@@ -37,7 +37,7 @@ namespace RecipeTest
 
         private void ExecuteSQL(string sql)
         {
-            DBManager.SetConnectionString(testconnstring, false);
+            //DBManager.SetConnectionString(testconnstring, false);
             SQLUtility.ExecuteSQL(sql);
             DBManager.SetConnectionString(connstring, false);
 
@@ -286,11 +286,61 @@ or r.RecipeStatus = 'Published'
             Assume.That(usercount > 0, "No users in DB, can't test");
             TestContext.WriteLine("Num of users in DB = " + usercount);
             TestContext.WriteLine("Ensure that num of rows returned by app matches " + usercount);
-            DataTable dt = Recipe.GetUsersList();
-            Assert.IsTrue(dt.Rows.Count == usercount, "Num rows returned by app (" +  dt.Rows.Count + ") <> " + usercount);
-            TestContext.WriteLine("Number of rows in Users returned by app = " + dt.Rows.Count);
+            bizUser p = new();
+            var lst = p.GetList();
+            Assert.IsTrue(lst.Count == usercount, "Num rows returned by app (" +  lst.Count + ") <> " + usercount);
+            TestContext.WriteLine("Number of rows in Users returned by app = " + lst.Count);
         }
-        
+
+        [Test]
+        public void GetListOfRecipes()
+        {
+            int recipecount = GetFirstColumnFirstRowValue("select total = count(*) from recipe");
+            Assume.That(recipecount > 0, "No recipes in DB, can't test");
+            TestContext.WriteLine("Num of recipes in DB = " + recipecount);
+            TestContext.WriteLine("Ensure that num of rows returned by app matches " + recipecount);
+            bizRecipe p = new();
+            var lst = p.GetList();
+            Assert.IsTrue(lst.Count == recipecount, "Num rows returned by app (" + lst.Count + ") <> " + recipecount);
+            TestContext.WriteLine("Number of rows in recipe returned by app = " + lst.Count);
+        }
+        [Test]
+        public void SearchRecipes()
+        {
+            string recipename = "e";
+            int recipecount = GetFirstColumnFirstRowValue($"select total = count(*) from recipe where recipename like '%{recipename}%'");
+            TestContext.WriteLine("Num of search results in DB = " + recipecount);
+            TestContext.WriteLine("Ensure that num of rows return by app matches " + recipecount);
+            bizRecipe p = new();
+            List<bizRecipe> lst = p.Search(recipename);
+            Assert.IsTrue(lst.Count == recipecount, "num rows returned by search (" + lst.Count + ") <> " + recipecount);
+            TestContext.WriteLine("Number of rows in search results return by app = " + lst.Count);
+        }
+        [Test]
+        public void GetListOfIngredients()
+        {
+            int ingredientcount = GetFirstColumnFirstRowValue("select total = count(*) from ingredient");
+            Assume.That(ingredientcount > 0, "No ingredients in DB, can't test");
+            TestContext.WriteLine("Num of ingredients in DB = " + ingredientcount);
+            TestContext.WriteLine("Ensure that num of rows returned by app matches " + ingredientcount);
+            bizIngredient p = new();
+            var lst = p.GetList();
+            Assert.IsTrue(lst.Count == ingredientcount, "Num rows returned by app (" + lst.Count + ") <> " + ingredientcount);
+            TestContext.WriteLine("Number of rows in ingredient returned by app = " + lst.Count);
+        }
+        [Test]
+        public void SearchIngredients()
+        {
+            string ingredientname = "e";
+            int ingredientcount = GetFirstColumnFirstRowValue($"select total = count(*) from ingredient where ingredientname like '%{ingredientname}%'");
+            TestContext.WriteLine("Num of search results in DB = " + ingredientcount);
+            TestContext.WriteLine("Ensure that num of rows return by app matches " + ingredientcount);
+            bizIngredient p = new();
+            List<bizIngredient> lst = p.Search(ingredientname);
+            Assert.IsTrue(lst.Count == ingredientcount, "num rows returned by search (" + lst.Count + ") <> " + ingredientcount);
+            TestContext.WriteLine("Number of rows in search results return by app = " + lst.Count);
+        }
+
         [Test]
         public void SaveMultipleRows()
         {
